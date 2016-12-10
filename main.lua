@@ -2,7 +2,7 @@
 require("tablebackground")
 player = require("player")
 
-local g_width, g_height  = 0, 0
+g_width, g_height  = 0, 0
 
 -- Things that can be rendered with an x, y, and blittable image
 local renderables = {}
@@ -45,12 +45,17 @@ end
 
 function love.load() 
 	love.graphics.setDefaultFilter('linear', 'nearest')
+	love.window.setMode(768, 600)
 	sounds = loadSounds()
 	images = loadAssetsIntoTable()
 	player.image = images["WizardLightning.png"]
-	g_width, g_height = love.graphics.getDimensions()
+	player.bounds = getTableBounds()
+	g_height, g_width = love.graphics.getDimensions()
 	player.x = g_width / 2
 	player.y = g_height / 2 
+	player.w, player.h = player.image:getDimensions()
+	-- player.bounds.x.max = g_height
+	-- player.bounds.y.max = g_width
 
 	table.insert(renderables, player)
 	table.insert(updateables, player)
