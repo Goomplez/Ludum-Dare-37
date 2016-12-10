@@ -17,12 +17,15 @@ local player = {
 
 
 function love.load() 
+	 love.graphics.setDefaultFilter('nearest', 'nearest')
 	local playerSprite = love.graphics.newImage("assets/Wizard.png")
 	player.image = playerSprite
+	-- playerSprite:setFilter('nearest', 'nearest')
 	table.insert(renderables, player)
 	g_width, g_height = love.graphics.getDimensions()
 	player.x = g_width / 2
 	player.y = g_height / 2
+
 end
 
 function love.draw() 
