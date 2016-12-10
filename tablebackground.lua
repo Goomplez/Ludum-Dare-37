@@ -3,10 +3,8 @@ function renderTable()
 	love.graphics.push()
 	love.graphics.translate(32, 64)
 	local draw = love.graphics.draw
-	-- render 22x11 table
-	-- render lava around table
-	-- render cave all above table
 
+	-- render 22x11 table
 	local scale = 2
 	local w = 16 * scale
 	local h = 16 * scale
@@ -21,10 +19,13 @@ function renderTable()
 		draw(images["wood-vertical.png"], i * w, j * h, 0, scale)
 	end
 
+	-- render cave all above table
 	j = -2
 	for i=-1, 22, 1 do
 		draw(images["cavewall.png"], i * w, j * h, 0, scale)
 	end
+
+	-- render lava around table
 	j = -1
 	for i=-1, 22, 1 do
 		draw(images["lava.png"], i * w, j * h, 0, scale)

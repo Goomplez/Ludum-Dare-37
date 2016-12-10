@@ -13,20 +13,22 @@ function player_update(self, dt)
 		self.x = self.x - self.speed * dt
 	end
 
-	xbounds = self.bounds.x
-	ybounds = self.bounds.y
-	if (self.x + (self.w)) > xbounds.max then
-		self.x = xbounds.max - self.w
+	local xbounds = self.bounds.x
+	local ybounds = self.bounds.y
+	local halfw = self.w 
+	local halfh = self.h
+	if (self.x + halfw) < xbounds.min then
+		self.x = xbounds.min - halfw
 	end
-	if self.x < xbounds.min then
-		self.x = xbounds.min
+	if (self.y + halfh) < ybounds.min then
+		self.y = ybounds.min - halfh
 	end
 
-	if self.y < ybounds.min then
-		self.y = ybounds.min
+	if (self.x + halfw) > xbounds.max then
+		self.x = xbounds.max - halfw
 	end
-	if (self.y +  (self:scaled('h'))) > ybounds.max then
-		self.y = ybounds.max - self:scaled('h')
+	if (self.y + halfh) > ybounds.max then
+		self.y = ybounds.max - halfh
 	end
 end
 

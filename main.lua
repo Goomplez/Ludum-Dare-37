@@ -52,10 +52,9 @@ function love.load()
 	g_height, g_width = love.graphics.getDimensions()
 	player.x = g_width / 2
 	player.y = g_height / 2 
-	player.h, player.w = player.image:getDimensions()
+	player.w, player.h = player.image:getDimensions()
 	player.bounds.x.max = g_height
 	player.bounds.y.max = g_width
-
 
 	table.insert(renderables, player)
 	table.insert(updateables, player)
