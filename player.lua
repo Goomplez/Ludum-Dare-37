@@ -15,20 +15,20 @@ function player_update(self, dt)
 
 	local xbounds = self.bounds.x
 	local ybounds = self.bounds.y
-	local halfw = self.w 
-	local halfh = self.h
-	if (self.x + halfw) < xbounds.min then
-		self.x = xbounds.min - halfw
+	local w = self.w * 2
+	local h = self.h * 2
+	if (self.x) < xbounds.min then
+		self.x = xbounds.min
 	end
-	if (self.y + halfh) < ybounds.min then
-		self.y = ybounds.min - halfh
+	if (self.y + (5 * (w / 4))) < ybounds.min then
+		self.y = ybounds.min - (5 *(w / 4))
 	end
 
-	if (self.x + halfw) > xbounds.max then
-		self.x = xbounds.max - halfw
+	if (self.x + w) > xbounds.max then
+		self.x = xbounds.max - w
 	end
-	if (self.y + halfh) > ybounds.max then
-		self.y = ybounds.max - halfh
+	if (self.y + h) > ybounds.max then
+		self.y = ybounds.max - h
 	end
 end
 

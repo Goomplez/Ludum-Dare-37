@@ -1,3 +1,14 @@
+function getTableBounds()
+	local scale = 2
+	local w = 16 * scale
+	local h = 16 * scale
+	local xBounds = { min = 32, max = 32 + (w * 22) }
+	local yBounds = { min = 64, max = 64 + (h * 12) }
+	return {
+		x = xBounds,
+		y = yBounds
+	}
+end
 -- How the table is rendered
 function renderTable()
 	love.graphics.push()
@@ -6,8 +17,10 @@ function renderTable()
 
 	-- render 22x11 table
 	local scale = 2
+	-- If the scale changes, change it in getTableBounds() as well
 	local w = 16 * scale
 	local h = 16 * scale
+
 	for j=0, 11, 1 do
 		for i=0, 21, 1 do
 			draw(images["wood.png"], i * w, j * h, 0, scale)
