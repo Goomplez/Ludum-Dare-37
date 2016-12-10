@@ -1,6 +1,7 @@
 -- TODO:
 
 -- 
+require("lovedebug")
 
 local g_width, g_height  = 0, 0
 
@@ -13,19 +14,34 @@ local player = {
 	y = 0,
 	scale = 4.0,
 	rotation = 0
- }
+}
+local images = {}
 
+function string.ends(String,End)
+   return End=='' or string.sub(String,-string.len(End))==End
+end 
+
+function loadAssetsIntoTable()
+	local fs = love.filesystem
+	local images = {}
+	local files = fs.getDirectoryItems("assets")
+	for i, file in ipairs(files) do
+		if fs.isFile("assets/" ..file) and string.ends(file, ".png")  then
+			images[file] = love.graphics.newImage("assets/"..file)
+		end
+	end
+
+	return images
+end
 
 function love.load() 
-	 love.graphics.setDefaultFilter('nearest', 'nearest')
-	local playerSprite = love.graphics.newImage("assets/Wizard.png")
-	player.image = playerSprite
-	-- playerSprite:setFilter('nearest', 'nearest')
+	love.graphics.setDefaultFilter('linear', 'nearest')
+	images = loadAssetsIntoTable()
+	player.image = images["WizardLightning.png"]
 	table.insert(renderables, player)
 	g_width, g_height = love.graphics.getDimensions()
 	player.x = g_width / 2
-	player.y = g_height / 2
-
+	player.y = g_height / 2 
 end
 
 function love.draw() 
