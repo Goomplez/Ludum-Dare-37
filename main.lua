@@ -11,7 +11,7 @@ local updateables = {}
 images = {}
 
 function string.ends(String,End)
-   return End=='' or string.sub(String,-string.len(End))==End
+   return End=='' or string.sub(String, -string.len(End))==End
 end 
 
 function loadAssetsIntoTable()
@@ -19,14 +19,12 @@ function loadAssetsIntoTable()
 	local images = {}
 	local files = fs.getDirectoryItems("assets")
 	for i, file in ipairs(files) do
-		if fs.isFile("assets/" ..file) and string.ends(file, ".png")  then
-			images[file] = love.graphics.newImage("assets/"..file)
+		if fs.isFile("assets/" .. file) and string.ends(file, ".png")  then
+			images[file] = love.graphics.newImage("assets/" .. file)
 		end
 	end
 	return images
 end
-
-
 
 function love.update(dt)
 	for i, v in ipairs(updateables) do

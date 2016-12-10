@@ -23,7 +23,7 @@ function renderTable()
 
 	j = -2
 	for i=-1, 22, 1 do
-		draw(images["cavewall x8.png"], i * w, j * h, 0, scale / 8)
+		draw(images["cavewall.png"], i * w, j * h, 0, scale)
 	end
 	j = -1
 	for i=-1, 22, 1 do
@@ -43,8 +43,6 @@ function renderTable()
 	for j=0, 12, 1 do
 		draw(images["lava.png"], i * w, j * h, 0, scale)
 	end
-
-
 
 	love.graphics.pop()
 end
