@@ -1,4 +1,4 @@
-require("lovedebug")
+-- require("lovedebug")
 require("tablebackground")
 player = require("player")
 
@@ -7,19 +7,30 @@ g_width, g_height  = 0, 0
 -- Things that can be rendered with an x, y, and blittable image
 local renderables = {}
 local updateables = {}
+local fs = love.filesystem
 
 images = {}
+sounds = {}
 
 function string.ends(String,End)
    return End=='' or string.sub(String, -string.len(End))==End
 end 
 
+function loadSounds()
+	local sounds = {}
+	for i, file in ipairs(fs.getDirectoryItems("sounds")) do
+		if fs.isFile("sounds/" .. file) and string.ends(file, ".wav") then
+			sounds[file] = love.audio.newSource("sounds/" .. file)
+		end
+	end
+	return sounds
+end
+
 function loadAssetsIntoTable()
-	local fs = love.filesystem
 	local images = {}
 	local files = fs.getDirectoryItems("assets")
 	for i, file in ipairs(files) do
-		if fs.isFile("assets/" .. file) and string.ends(file, ".png")  then
+		if fs.isFile("assets/" .. file) and string.ends(file, ".png") then
 			images[file] = love.graphics.newImage("assets/" .. file)
 		end
 	end
@@ -35,6 +46,7 @@ end
 function love.load() 
 	love.graphics.setDefaultFilter('linear', 'nearest')
 	love.window.setMode(768, 600)
+	sounds = loadSounds()
 	images = loadAssetsIntoTable()
 	player.image = images["WizardLightning.png"]
 	g_height, g_width = love.graphics.getDimensions()
