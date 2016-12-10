@@ -8,8 +8,7 @@ local g_width, g_height  = 0, 0
 local renderables = {}
 local updateables = {}
 
-
-local images = {}
+images = {}
 
 function string.ends(String,End)
    return End=='' or string.sub(String,-string.len(End))==End
