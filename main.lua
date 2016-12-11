@@ -1,4 +1,4 @@
-require("lovedebug")
+-- require("lovedebug")
 require("utils")
 -- require("tablebackground")
 require("spells")
@@ -73,7 +73,7 @@ function love.update(dt)
 			local bounds = getTableBounds()
 			local xbounds = bounds.x
 			local ybounds = bounds.y
-			local spawn = ({spawn_skeleton, spawn_goblin})[math.random(2)]
+			local spawn = ({spawn_skeleton, spawn_goblin, spawn_zombie})[math.random(3)]
 			local enemy = spawn(math.prandom(xbounds.min, xbounds.max), math.prandom(ybounds.min, ybounds.max), "left")
 			addEnemy(enemy)
 		end)
@@ -107,6 +107,10 @@ function love.load()
 	local gob_y = math.prandom(bounds.y.min, bounds.y.max)
 	local gobs = spawn_goblin(gob_x, gob_y, "left")
 	addEnemy(gobs)
+	local z_x = math.prandom(bounds.x.min, bounds.x.max)
+	local z_y = math.prandom(bounds.y.min, bounds.y.max)
+	local brainzzzz = spawn_zombie(z_x, z_y, "left")
+	addEnemy(brainzzzz)
 	sounds["explosion.wav"]:setVolume(1.5)
 	sounds["music.wav"]:setVolume(.25)
 end
