@@ -11,7 +11,7 @@ function getTableBounds()
 end
 
 -- How the table is rendered
-function renderTable()
+function renderTable(lavaPictureName)
 	love.graphics.push()
 	love.graphics.translate(32, 64)
 	local draw = love.graphics.draw
@@ -42,21 +42,21 @@ function renderTable()
 	-- render lava around table
 	j = -1
 	for i=-1, 22, 1 do
-		draw(images["lava.png"], i * w, j * h, 0, scale)
+		draw(images[lavaPictureName], i * w, j * h, 0, scale)
 	end
 
 	j = 13
 	for i=-1, 22, 1 do
-		draw(images["lava.png"], i * w, j * h, 0, scale)
+		draw(images[lavaPictureName], i * w, j * h, 0, scale)
 	end
 
 	local i = -1
 	for j=0, 12, 1 do
-		draw(images["lava.png"], i * w, j * h, 0, scale)
+		draw(images[lavaPictureName], i * w, j * h, 0, scale)
 	end
 	i = 22
 	for j=0, 12, 1 do
-		draw(images["lava.png"], i * w, j * h, 0, scale)
+		draw(images[lavaPictureName], i * w, j * h, 0, scale)
 	end
 
 	love.graphics.pop()

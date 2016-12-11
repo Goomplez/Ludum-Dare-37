@@ -8,9 +8,15 @@ g_width, g_height  = 0, 0
 local renderables = {}
 local updateables = {}
 local fs = love.filesystem
+local lava = 0
+local lavaPictureName = "lava.png"
 
 images = {}
 sounds = {}
+
+function lavaTimer()
+
+end
 
 function string.ends(String,End)
    return End=='' or string.sub(String, -string.len(End))==End
@@ -41,6 +47,17 @@ function love.update(dt)
 	for i, v in ipairs(updateables) do
 		v:update(dt)
 	end
+	lava=lava+dt
+	if lava >= 12 then
+		lavaPictureName = "lava.png"
+		lava = 0
+	elseif lava >= 9 then
+		lavaPictureName = "lava-dark.png"
+	elseif lava >= 6 then
+		lavaPictureName = "lava.png"
+	elseif lava >= 3 then
+		lavaPictureName = "lava-bright.png"
+	end
 end
 
 function love.load() 
@@ -62,7 +79,7 @@ function love.load()
 end
 
 function love.draw() 
-	renderTable()
+	renderTable(lavaPictureName)
 	for i, surface in ipairs(renderables) do
 		love.graphics.draw(surface.image, surface.x, surface.y, surface.rotation, surface.scale)
 	end
