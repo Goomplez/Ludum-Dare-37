@@ -14,14 +14,16 @@ local function next_path(self)
 		self.path.selectedIdx = 1
 	end
 	local dest_pair = self.path:current()
-	self.traveling_on = ({"x", "y"})[math.random(2)]
-	local dimension = self.traveling_on
 	local dest = {}
-	dest.x = dest_pair.x
-	if #self.tween_chain == 1 then
+	if self.traveling_on then
+		self.traveling_on = ({"x", "y"})[math.random(2)]
+		local dimension = self.traveling_on
+		dest[dimension] = dest_pair[dimension]
+
+	else
+		dest.x = dest_pair.x
 		dest.y = dest_pair.y
 	end
-	dest[dimension] = dest_pair[dimension]
 	if dest.x then
 		self.scale.x = math.copysign(self.scale.x, self.x - dest.x)
 	end
@@ -29,10 +31,10 @@ local function next_path(self)
 	self.tween = flux.to(self, dest_pair.time, dest)
 	self.tween:ease("linear")
 	self.tween:oncomplete(function()
-		if #self.tween_chain == 1 then
-			self:next_path()
-		else 
+		if self.traveling_on then
 			self:switch_xy()
+		else 
+			self:next_path()
 		end
 	end)
 end
@@ -107,7 +109,7 @@ function spawn_goblin(x,y, dir)
 		update = update,
 		-- Skeleton AI info
 		path = get_random_path({x = x, y = y} , getTableBounds()),
-		traveling_on = "",
+		traveling_on = nil,
 		travel_timer = 0,
 		prev_x  = x,
 		prev_y = y,

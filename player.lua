@@ -1,5 +1,5 @@
 local images = require("images")
-function player_update(self, dt)
+local function player_update(self, dt)
 	key = love.keyboard
 	if key.isDown("w") then
 		self.y = self.y - self.speed * dt
@@ -14,6 +14,19 @@ function player_update(self, dt)
 	if key.isDown("a") then
 		self.x = self.x - self.speed * dt
 		self.scale.x = math.copysign(self.scale.x, -1)
+	end
+
+	if self.hit_timer > self.hit_delay then
+		if key.isDown("-") then
+			self.HP = self.HP - 1
+			self.hit_timer = 0
+		end
+		if key.isDown("=") then
+			self.HP = self.HP + 1
+			self.hit_timer = 0
+		end
+	else
+		self.hit_timer = self.hit_timer + dt
 	end
 
 	if not self.can_shoot then
@@ -103,4 +116,11 @@ return {
 	scaled = function (self, name)
 		return self[name] * self.scale 
 	end,
+	-- HP, to be used by player_health
+	HP = 4,
+	hit_timer = 2.1,
+	hit_delay = 2,
+	is_vulnerable = function (self)
+		return hit_timer > hit_delay
+	end
 }

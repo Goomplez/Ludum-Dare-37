@@ -82,6 +82,7 @@ function love.load()
 	images = require("images")
 	sounds = require("sounds")
 	player = require("player")
+	require("player_health")
 	player.image = images["WizardLightning.png"]
 	player.bounds = getTableBounds()
 	g_height, g_width = love.graphics.getDimensions()
