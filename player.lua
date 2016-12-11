@@ -106,7 +106,7 @@ return {
 
 	-- Custom player information
 	speed = 200,
-	shot_time = .1,
+	shot_time = .2,
 	shot_timer = 0,
 	offset = {
 		x = 10,

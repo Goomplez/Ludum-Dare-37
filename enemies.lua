@@ -79,12 +79,35 @@ function get_random_path(start_point, bounds)
 	return path
 end
 
+-- Stub for skeleton, goblin
 local function update(self, dt)
 end
 
+local function harm_z(self)
+	if self.hurt_timer >= self.hurt_time then
+		self.HP = self.HP - 1
+		self.hurt_timer = 0
+		if self.HP == 0 then
+			self.hurt_timer = self.hurt_time + 0.001	
+			self.rm_render = true
+			self.rm_update = true
+			self.rm_enemy = true
+		end
+	end
+end
+-- Update fuction for zombie
 local function brainz(self, dt)
 	local angle = math.angle(self.x, self.y, player.x, player.y)
 	self.x, self.y = offsetByVector({x = self.x, y = self.y}, angle, self.speed * dt)
+	if self.hurt_timer < self.hurt_time then
+		self.hurt_timer = self.hurt_timer + dt
+		if self.hurt_timer >= self.hurt_time then
+			self.rm_render = false
+			addRenderable(self)
+		else
+			self.rm_render = true
+		end
+	end
 
 end
 
@@ -110,6 +133,8 @@ function spawn_zombie(x, y, dir)
 		-- Update
 		update = brainz,
 		HP = 20,
+		hurt_time = .1,
+		hurt_timer = .11,
 		harm = harm_z,
 
 		rm_render = false,
