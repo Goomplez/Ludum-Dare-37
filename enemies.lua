@@ -1,16 +1,52 @@
 -- Enemies
 local images = require("images")
 local sounds = require("sounds")
+local flux = require("flux")
 
 local function collides(self, spells) 
 
 end
 
-local function update(self, dt)
-	local dest = self.path:current()
-
+local function next_path(self)
+	-- Current x and y are set up already
+	self.path.selectedIdx = self.path.selectedIdx + 1
+	if self.path.selectedIdx < #self.path.selectedIdx then
+		self.path.selectedIdx = 1
+	end
+	local dest_pair = self.path:current()
+	self.traveling_on = ({"x", "y"})[math.random(2)]
 	local dimension = self.traveling_on
-	local self[dimension] = math.lerp()
+	local dest = {}
+	dest[dimension] = dest_pair[dimension]
+	self.tween = flux.to(self, dest_pair.time, dest)
+	self.tween:oncomplete(function()
+		self:switch_xy()
+	end)
+end
+
+local function switch_xy(self)
+	local dest_pair = self.path:current()
+	if self.traveling_on == "x" then
+		self.traveling_on = "y"
+	else
+		self.traveling_on = "x"
+	end
+	local dimension = self.traveling_on
+	local dest = {}
+	dest[dimension] = dest_pair[dimension]
+	self.tween = flux.to(self, dest_pair.time, dest)
+	self.tween:oncomplete(function()
+		self:next_path()
+	end)
+end
+
+local function update(self, dt)
+	-- So we have 3 states to consider: Moving on x, monving on y, and when 
+	if tween then
+		tween:update(dt)
+	else 
+		self:next_path()
+	end
 
 end
 
@@ -50,9 +86,12 @@ function spawn_skelton(x, y, dir)
 		collides = collides,
 		-- Skeleton AI info
 		path = get_random_path(x, y, getTableBounds()),
-		traveling_on = "x",
+		traveling_on = "",
 		travel_timer = 0,
 		prev_x  = x,
-		prev_y = y
+		prev_y = y,
+		-- Used for the tweening function to call per frame
+		tween = nil,
+
 	}
 end
