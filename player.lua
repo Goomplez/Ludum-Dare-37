@@ -35,6 +35,7 @@ function player_update(self, dt)
 				 keys[i])
 			addRenderable(spell)
 			addUpdateable(spell)
+			addPlayerSpell(spell)
 			self.can_shoot = false
 			sounds["explosion.wav"]:stop()
 			sounds["explosion.wav"]:play()

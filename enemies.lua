@@ -50,12 +50,6 @@ end
 
 local function update(self, dt)
 	flux.update(dt)
-	-- So we have 3 states to consider: Moving on x, monving on y, and when 
-	--if not self.tween then
-	--else 
-		--self:next_path()
-	-- end
-
 end
 
 function get_random_path(start_point, bounds)
@@ -95,6 +89,7 @@ function spawn_skeleton(x, y, dir)
 			x = 10,
 			y = 10, 
 		},
+		r = 5,
 		rotation = dirToAngle(dir),
 
 		-- Collideable

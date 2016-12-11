@@ -24,21 +24,43 @@ function string.ends(String,End)
 end 
 
 function love.update(dt)
+	for i, enemy in ipairs(enemies) do
+		for i, shot in ipairs(player_spells) do
+			if (math.dist(enemy.x, enemy.y, shot.x, shot.y) < (enemy.r + shot.r)) then
+				print("FOOO")
+				shot.rm_update = true
+				shot.rm_render = true
+				shot.rm_player_spell = true
+
+				enemy.rm_render = true
+				enemy.rm_update = true
+				enemy.rm_enemy = true
+			end
+		end
+	end
+
 	for i, v in ipairs(updateables) do
 		v:update(dt)
 	end
-	for i, v in ipairs(updateables) do 
-		if v.rm_update then
-			updateables[i] = nil
+
+	function nilTable(array, key) 
+		for i=#array, 1, -1 do
+			if array[i][key] then
+				table.remove(array, i)
+			end
 		end
 	end
-	for i,v in ipairs(renderables) do 
-		if v.rm_render then
-			renderables[i] = nil
-		end
-	end
-	compactArray(updateables)
-	compactArray(renderables)
+
+	nilTable(updateables, "rm_update")
+	nilTable(renderables, "rm_render")
+	nilTable(enemies, "rm_enemy")
+	nilTable(player_spells, "rm_player_spell")
+
+	--compactArray(updateables)
+	--compactArray(renderables)
+	--compactArray(enemies)
+	-- compactArray(player_spells)
+	sounds["music.wav"]:play()
 
 end
 
@@ -64,6 +86,9 @@ function love.load()
 	local skelly = spawn_skeleton(skel_x, skel_y, "left")
 	addUpdateable(skelly)
 	addRenderable(skelly)
+	addEnemy(skelly)
+	sounds["explosion.wav"]:setVolume(1.5)
+	sounds["music.wav"]:setVolume(.25)
 end
 
 function love.draw() 
@@ -88,6 +113,9 @@ function love.draw()
 			love.graphics.draw(surface.image, surface.x, surface.y, surface.rotation, surface.scale.x, surface.scale.y)
 		end
 	end
+	love.graphics.print("Spells:".. #player_spells, 0, 0)
+	love.graphics.print("Renderables:" .. #renderables, 0, 10)
+	love.graphics.print("Updateables:".. #updateables, 0, 20)
 end
 
 local update_reqs = {
@@ -106,11 +134,50 @@ function type_check(item, fields)
 end
 
 function addUpdateable(item) 
-	if type_check(item, update_reqs) then
+	valid, msg = type_check(item, update_reqs)
+	if valid then
 		table.insert(updateables, item)
 	else
+		print(msg)
 		error("Tried to add non-updatable to updateables")
 	end
+end
+
+local enemy_reqs = {
+	rm_enemy = "boolean",
+	x = "number",
+	y = "number",
+	r = "number",
+}
+
+local player_spell_reqs = {
+	rm_player_spell = "boolean",
+	x = "number",
+	y = "number",
+	r = "number",
+}
+
+function addPlayerSpell(item) 
+	valid, msg = type_check(item, player_spell_reqs)
+	if valid then
+		table.insert(player_spells, item)
+	else
+		print(msg)
+		error("Tried to add non-updatable to updateables")
+	end
+
+end
+
+function addEnemy(item)
+	valid, msg = type_check(item, enemy_reqs)
+	if valid then
+		table.insert(enemies, item)
+	else
+		print(msg)
+		error("Tried to add non-updatable to updateables")
+	end
+
+	-- body
 end
 
 local render_func_reqs = {
