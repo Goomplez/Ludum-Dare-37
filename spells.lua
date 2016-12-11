@@ -11,10 +11,6 @@ local function update(self, dt)
 	end
 end
 
-local function collides(self, shape)
-
-end
-
 function spawn_spell(x, y, direction)
 	-- Renderable, updateable, colliable
 	return {

@@ -2,10 +2,7 @@
 local images = require("images")
 local sounds = require("sounds")
 local flux = require("flux")
-
-local function collides(self, spells) 
-
-end
+local player = require("player")
 
 local function next_path(self)
 	-- Current x and y are set up already
@@ -59,9 +56,6 @@ local function switch_xy(self)
 	end)
 end
 
-local function update(self, dt)
-	-- flux.update(dt)
-end
 
 function get_random_path(start_point, bounds)
 	local startx, starty, xBounds, yBounds
@@ -85,8 +79,48 @@ function get_random_path(start_point, bounds)
 	return path
 end
 
+local function update(self, dt)
+end
+
+local function brainz(self, dt)
+	local angle = math.angle(self.x, self.y, player.x, player.y)
+	self.x, self.y = offsetByVector({x = self.x, y = self.y}, angle, self.speed * dt)
+
+end
+
+function spawn_zombie(x, y, dir)
+	-- body
+	local zzombie = {
+		-- Renderable
+		x = x,
+		y = y,
+		image = images["zombie-invert.png"],
+		scale = {
+			x = 2.0,
+			y = 2.0,
+		},
+		offset = {
+			x = 10,
+			y = 10, 
+		},
+		rotation = dirToAngle(dir),
+		-- Enemy
+		r = 20,
+		speed = 128,
+		-- Update
+		update = brainz,
+		HP = 20,
+		harm = harm_z,
+
+		rm_render = false,
+		rm_update = false,
+		rm_enemy = false,
+	}
+	return zzombie
+end
+
 function spawn_goblin(x,y, dir)
-	local skel = {
+	local gob = {
 		-- Renderable
 		x = x,
 		y = y,
@@ -120,8 +154,8 @@ function spawn_goblin(x,y, dir)
 		rm_render = false,
 		rm_enemy  = false,
 	}
-	skel:next_path()
-	return skel
+	gob:next_path()
+	return gob
 	-- body
 end
 
