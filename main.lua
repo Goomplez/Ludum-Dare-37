@@ -58,11 +58,6 @@ function love.update(dt)
 	nilTable(renderables, "rm_render")
 	nilTable(enemies, "rm_enemy")
 	nilTable(player_spells, "rm_player_spell")
-
-	--compactArray(updateables)
-	--compactArray(renderables)
-	--compactArray(enemies)
-	-- compactArray(player_spells)
 	sounds["music.wav"]:play()
 	if spawn_new then 
 		spawn_new = false
@@ -71,11 +66,9 @@ function love.update(dt)
 			local bounds = getTableBounds()
 			local xbounds = bounds.x
 			local ybounds = bounds.y
-			local skelly = spawn_skeleton(math.prandom(xbounds.min, xbounds.max), math.prandom(ybounds.min, ybounds.max), "left")
-			addUpdateable(skelly)
-			addRenderable(skelly)
-			addEnemy(skelly)
-
+			local spawn = ({spawn_skeleton, spawn_goblin})[math.random(2)]
+			local enemy = spawn(math.prandom(xbounds.min, xbounds.max), math.prandom(ybounds.min, ybounds.max), "left")
+			addEnemy(enemy)
 		end)
 	end
 
@@ -101,9 +94,11 @@ function love.load()
 	local skel_x = math.prandom(bounds.x.min, bounds.x.max)
 	local skel_y = math.prandom(bounds.y.min, bounds.y.max)
 	local skelly = spawn_skeleton(skel_x, skel_y, "left")
-	addUpdateable(skelly)
-	addRenderable(skelly)
 	addEnemy(skelly)
+	local gob_x = math.prandom(bounds.x.min, bounds.x.max)
+	local gob_y = math.prandom(bounds.y.min, bounds.y.max)
+	local gobs = spawn_goblin(gob_x, gob_y, "left")
+	addEnemy(gobs)
 	sounds["explosion.wav"]:setVolume(1.5)
 	sounds["music.wav"]:setVolume(.25)
 end
@@ -188,6 +183,8 @@ end
 function addEnemy(item)
 	valid, msg = type_check(item, enemy_reqs)
 	if valid then
+		addRenderable(item)
+		addUpdateable(item)
 		table.insert(enemies, item)
 	else
 		print(msg)

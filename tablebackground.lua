@@ -13,14 +13,14 @@ end
 
 local function update(self, dt) 
 	self.lava_timer = self.lava_timer + dt
-	if self.lava_timer >= 12 then
+	if self.lava_timer >= 4 then
 		self.lavaPictureName = "lava.png"
 		self.lava_timer = 0
-	elseif self.lava_timer >= 9 then
-		self.lavaPictureName = "lava-dark.png"
-	elseif self.lava_timer >= 6 then
-		self.lavaPictureName = "lava.png"
 	elseif self.lava_timer >= 3 then
+		self.lavaPictureName = "lava-dark.png"
+	elseif self.lava_timer >= 2 then
+		self.lavaPictureName = "lava.png"
+	elseif self.lava_timer >= 1 then
 		self.lavaPictureName = "lava-bright.png"
 	end
 end
