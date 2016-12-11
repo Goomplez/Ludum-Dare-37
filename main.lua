@@ -1,5 +1,7 @@
--- require("lovedebug")
+require("lovedebug")
+require("utils")
 require("tablebackground")
+require("spells")
 player = require("player")
 
 g_width, g_height  = 0, 0
@@ -11,12 +13,9 @@ local fs = love.filesystem
 local lava = 0
 local lavaPictureName = "lava.png"
 
+
 images = {}
 sounds = {}
-
-function lavaTimer()
-
-end
 
 function string.ends(String,End)
    return End=='' or string.sub(String, -string.len(End))==End
@@ -47,7 +46,20 @@ function love.update(dt)
 	for i, v in ipairs(updateables) do
 		v:update(dt)
 	end
-	lava=lava+dt
+	for i, v in ipairs(updateables) do 
+		if v.rm_update then
+			updateables[i] = nil
+		end
+	end
+	for i,v in ipairs(renderables) do 
+		if v.rm_render then
+			renderables[i] = nil
+		end
+	end
+
+	compactArray(updateables)
+	compactArray(renderables)
+	lava = lava + dt
 	if lava >= 12 then
 		lavaPictureName = "lava.png"
 		lava = 0
@@ -73,8 +85,7 @@ function love.load()
 	player.w, player.h = player.image:getDimensions()
 	-- player.bounds.x.max = g_height
 	-- player.bounds.y.max = g_width
-
-	table.insert(renderables, player)
+	addRenderable(player)
 	table.insert(updateables, player)
 end
 
@@ -82,5 +93,46 @@ function love.draw()
 	renderTable(lavaPictureName)
 	for i, surface in ipairs(renderables) do
 		love.graphics.draw(surface.image, surface.x, surface.y, surface.rotation, surface.scale)
+	end
+
+end
+
+local update_reqs = {
+	rm_update = "boolean",
+	update = "function",
+}
+
+function type_check(item, fields)
+	for k, _type in pairs(fields) do
+		if type(item[k]) ~= _type then
+			print(k, _type, type(item[k]))
+			return false
+		end
+	end
+	return true
+end
+
+function addUpdateable(item) 
+	if type_check(item, update_reqs) then
+		table.insert(updateables, item)
+	else
+		error("Tried to add non-updatable to updateables")
+	end
+end
+
+local render_reqs = {
+	rm_render = "boolean",
+	image = "userdata",
+	x = "number",
+	y = "number",
+	rotation = "number",
+	scale = "number",
+}
+
+function addRenderable(item) 
+	if type_check(item, render_reqs) then
+		table.insert(renderables, item)
+	else 
+		error("Tried to add non-renderable to renerables")
 	end
 end

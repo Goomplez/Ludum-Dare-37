@@ -13,6 +13,26 @@ function player_update(self, dt)
 		self.x = self.x - self.speed * dt
 	end
 
+	if not self.can_shoot then
+		self.shot_timer = self.shot_timer + dt
+	end
+	if self.shot_timer > self.shot_time then
+		self.can_shoot = true
+		self.shot_timer = 0
+	end
+
+
+	keys = {"up", "down", "left", "right"}
+	for i=1, #keys do
+		if key.isDown(keys[i]) and self.can_shoot then
+			local spell = spawn_spell(self.x, self.y, keys[i])
+			addRenderable(spell)
+			addUpdateable(spell)
+			self.can_shoot = false
+			break
+		end
+	end
+
 	local xbounds = self.bounds.x
 	local ybounds = self.bounds.y
 	local w = self.w * 2
@@ -38,6 +58,9 @@ return {
 	y = 0,
 	w = 0,
 	h = 0,
+	shot_time = .75,
+	shot_timer = 0,
+	can_shoot = false,
 	scaled = function (self, name)
 		return self[name] * self.scale 
 	end,
@@ -48,5 +71,7 @@ return {
 		x = { min = 0, max = g_width },
 		y = { min = 0, max = g_height },
 	},
-	update = player_update
+	update = player_update,
+	rm_render = false,
+	rm_update = false,
 }
