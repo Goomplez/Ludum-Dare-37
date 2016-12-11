@@ -91,3 +91,21 @@ function compactArray(input)
 	        input[i]=nil
 	end
 end
+
+function offsetByVector (point, angle, length)
+	local x = math.cos(angle) * length
+	local y = math.sin(angle) * length
+	return point.x + x, point.y + y
+end
+
+function dirToAngle(dir) 
+	if dir == "up" then
+		return - 3 * math.pi / 2
+	elseif dir == "down" then
+		return - math.pi / 2
+	elseif dir == "right" then
+		return math.pi
+	elseif dir == "left" then
+		return 0
+	end
+end

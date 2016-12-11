@@ -1,6 +1,6 @@
 require("lovedebug")
 require("utils")
-require("tablebackground")
+-- require("tablebackground")
 require("spells")
 images = {} -- require("images")
 player = {} -- require("player")
@@ -11,11 +11,13 @@ g_width, g_height  = 0, 0
 -- Things that can be rendered with an x, y, and blittable image
 local renderables = {}
 local updateables = {}
-local collidables = {}
+local enemies = {}
+local player_spells = {}
+local enemy_spells = {}
 local fs = love.filesystem
+
 local lava = 0
 local lavaPictureName = "lava.png"
-
 
 function string.ends(String,End)
    return End=='' or string.sub(String, -string.len(End))==End
@@ -35,30 +37,18 @@ function love.update(dt)
 			renderables[i] = nil
 		end
 	end
-
 	compactArray(updateables)
 	compactArray(renderables)
-	lava = lava + dt
-	if lava >= 12 then
-		lavaPictureName = "lava.png"
-		lava = 0
-	elseif lava >= 9 then
-		lavaPictureName = "lava-dark.png"
-	elseif lava >= 6 then
-		lavaPictureName = "lava.png"
-	elseif lava >= 3 then
-		lavaPictureName = "lava-bright.png"
-	end
+
 end
 
 function love.load() 
 	love.graphics.setDefaultFilter('linear', 'nearest')
 	love.window.setMode(768, 600)
+	require("tablebackground")
 	images = require("images")
 	sounds = require("sounds")
 	player = require("player")
-	sounds = loadSounds()
-	images = loadAssetsIntoTable()
 	player.image = images["WizardLightning.png"]
 	player.bounds = getTableBounds()
 	g_height, g_width = love.graphics.getDimensions()
@@ -70,9 +60,13 @@ function love.load()
 end
 
 function love.draw() 
-	renderTable(lavaPictureName)
+	--renderTable(lavaPictureName)
 	for i, surface in ipairs(renderables) do
-		if surface.offset then
+		if surface.render then
+			-- Some objects need to control how they render
+			surface:render()
+		elseif surface.offset then
+			-- Other objects embed images/information
 			local offset = surface.offset
 			love.graphics.draw(
 				surface.image,
@@ -97,11 +91,11 @@ local update_reqs = {
 function type_check(item, fields)
 	for k, _type in pairs(fields) do
 		if type(item[k]) ~= _type then
-			print(k, _type, type(item[k]))
-			return false
+			-- print(k, _type, type(item[k]))
+			return false, k .. " " .. _type ..  " " .. type(item[k])
 		end
 	end
-	return true
+	return true, nil
 end
 
 function addUpdateable(item) 
@@ -111,6 +105,11 @@ function addUpdateable(item)
 		error("Tried to add non-updatable to updateables")
 	end
 end
+
+local render_func_reqs = {
+	rm_render = "boolean",
+	render = "function",
+}
 
 local render_reqs = {
 	rm_render = "boolean",
@@ -122,9 +121,13 @@ local render_reqs = {
 }
 
 function addRenderable(item) 
-	if type_check(item, render_reqs) then
+	valid, msg = type_check(item, render_func_reqs)
+	valid2, msg2 = type_check(item, render_reqs)
+	if valid or valid2 then
 		table.insert(renderables, item)
 	else 
+		print (msg)
+		print (msg2)
 		error("Tried to add non-renderable to renerables")
 	end
 end
