@@ -29,7 +29,11 @@ local function next_path(self)
 	self.tween = flux.to(self, dest_pair.time, dest)
 	self.tween:ease("linear")
 	self.tween:oncomplete(function()
-		self:switch_xy()
+		if #self.tween_chain == 1 then
+			self:next_path()
+		else 
+			self:switch_xy()
+		end
 	end)
 end
 
@@ -47,7 +51,7 @@ local function switch_xy(self)
 		self.scale.x = math.copysign(self.scale.x, self.x - dest.x)
 	end
 	self.tween = flux.to(self, dest_pair.time, dest)
-	self.tween:ease("quartinout")
+	self.tween:ease("linear")
 	self.tween:oncomplete(function()
 		self:next_path()
 	end)
@@ -65,7 +69,7 @@ function get_random_path(start_point, bounds)
 	path = {
 		selectedIdx = 1
 	}
-	for q = 1, 1 + math.random(10), 1 do 
+	for q = 1, 5 + math.random(5), 1 do 
 		local _x = xBounds.min + math.random(xBounds.max - xBounds.min)
 		local _y = yBounds.min + math.random(yBounds.max - yBounds.min)
 		local _time = 0.0065 * math.dist(_x, _y, startx, starty)
