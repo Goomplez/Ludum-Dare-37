@@ -6,6 +6,7 @@ function math.averageAngles(...)
 	return math.atan2(y, x)
 end
  
+
  
 -- Returns the distance between two points.
 function math.dist(x1,y1, x2,y2) return ((x2-x1)^2+(y2-y1)^2)^0.5 end
@@ -52,7 +53,13 @@ function math.sign(n) return n>0 and 1 or n<0 and -1 or 0 end
 -- Gives a precise random decimal number given a minimum and maximum
 function math.prandom(min, max) return love.math.random() * (max - min) + min end
  
- 
+function math.copysign(x, y)
+	if math.sign(x) == math.sign(y) then
+		return x
+	else
+		return -x
+	end
+ end
 -- Checks if two line segments intersect. Line segments are given in form of ({x,y},{x,y}, {x,y},{x,y}).
 function checkIntersect(l1p1, l1p2, l2p1, l2p2)
 	local function checkDir(pt1, pt2, pt3) return math.sign(((pt2.x-pt1.x)*(pt3.y-pt1.y)) - ((pt3.x-pt1.x)*(pt2.y-pt1.y))) end

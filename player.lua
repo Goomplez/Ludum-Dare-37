@@ -9,9 +9,11 @@ function player_update(self, dt)
 	end
 	if key.isDown("d") then
 		self.x = self.x + self.speed * dt
+		self.scale.x = math.copysign(self.scale.x, 1)
 	end
 	if key.isDown("a") then
 		self.x = self.x - self.speed * dt
+		self.scale.x = math.copysign(self.scale.x, -1)
 	end
 
 	if not self.can_shoot then
@@ -26,8 +28,11 @@ function player_update(self, dt)
 	keys = {"up", "down", "left", "right"}
 	for i=1, #keys do
 		if key.isDown(keys[i]) and self.can_shoot then
-			off = self.spell_offset
-			local spell = spawn_spell(self.x + off.x, self.y + off.y, keys[i])
+			--off = self.spell_offset
+			local spell = spawn_spell(
+				self.x,-- + off.x, 
+				self.y, -- + off.y,
+				 keys[i])
 			addRenderable(spell)
 			addUpdateable(spell)
 			self.can_shoot = false
@@ -44,15 +49,15 @@ function player_update(self, dt)
 	if (self.x) < xbounds.min then
 		self.x = xbounds.min
 	end
-	if (self.y + (5 * (w / 4))) < ybounds.min then
-		self.y = ybounds.min - (5 *(w / 4))
+	if (self.y) < ybounds.min then
+		self.y = ybounds.min
 	end
 
-	if (self.x + w) > xbounds.max then
-		self.x = xbounds.max - w
+	if (self.x ) > xbounds.max then
+		self.x = xbounds.max 
 	end
-	if (self.y + h) > ybounds.max then
-		self.y = ybounds.max - h
+	if (self.y ) > ybounds.max then
+		self.y = ybounds.max  
 	end
 end
 
@@ -61,7 +66,10 @@ return {
 	-- Renderable
 	x = 0,
 	y = 0,
-	scale = 2.0,
+	scale = {
+		x = 2.0,
+		y = 2.0
+	},
 	rotation = 0,
 	image = images["Wizard.png"],
 
@@ -85,6 +93,10 @@ return {
 	speed = 200,
 	shot_time = .1,
 	shot_timer = 0,
+	offset = {
+		x = 10,
+		y = 10,
+	},
 	spell_offset = { x = 20, y = 20 },
 	can_shoot = false,
 	scaled = function (self, name)

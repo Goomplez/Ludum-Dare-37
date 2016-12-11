@@ -80,12 +80,12 @@ function love.draw()
 				surface.x,
 				surface.y,
 				surface.rotation,
-				surface.scale,
-				surface.scale,
+				surface.scale.x,
+				surface.scale.y,
 				offset.x,
 				offset.y)
 		else
-			love.graphics.draw(surface.image, surface.x, surface.y, surface.rotation, surface.scale)
+			love.graphics.draw(surface.image, surface.x, surface.y, surface.rotation, surface.scale.x, surface.scale.y)
 		end
 	end
 end
@@ -124,7 +124,7 @@ local render_reqs = {
 	x = "number",
 	y = "number",
 	rotation = "number",
-	scale = "number",
+	scale = "table",
 }
 
 function addRenderable(item) 

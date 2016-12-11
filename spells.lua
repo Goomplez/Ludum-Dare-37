@@ -23,7 +23,7 @@ function spawn_spell(x, y, direction)
 		y = y,
 		image = images["iceball.png"],
 		rotation = dirToAngle(direction),
-		scale = 2.0,
+		scale = { x =2.0, y = 2.0, },
 		offset = {
 			x = 5,
 			y = 4,

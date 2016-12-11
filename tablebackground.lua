@@ -3,7 +3,7 @@ function getTableBounds()
 	local w = 16 * scale
 	local h = 16 * scale
 	local xBounds = { min = 32, max = 32 + (w * 22) }
-	local yBounds = { min = 64, max = 64 + (h * 12) }
+	local yBounds = { min = 64, max = 64 + (h * 11) }
 	return {
 		x = xBounds,
 		y = yBounds
