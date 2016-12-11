@@ -2,6 +2,7 @@ require("lovedebug")
 require("utils")
 -- require("tablebackground")
 require("spells")
+flux = require("flux")
 images = {} -- require("images")
 player = {} -- require("player")
 sounds = {} -- require("sounds")
@@ -24,10 +25,11 @@ function string.ends(String,End)
 end 
 
 function love.update(dt)
+	flux.update(dt)
+	local spawn_new = false
 	for i, enemy in ipairs(enemies) do
 		for i, shot in ipairs(player_spells) do
 			if (math.dist(enemy.x, enemy.y, shot.x, shot.y) < (enemy.r + shot.r)) then
-				print("FOOO")
 				shot.rm_update = true
 				shot.rm_render = true
 				shot.rm_player_spell = true
@@ -35,6 +37,7 @@ function love.update(dt)
 				enemy.rm_render = true
 				enemy.rm_update = true
 				enemy.rm_enemy = true
+				spawn_new = true
 			end
 		end
 	end
@@ -61,6 +64,20 @@ function love.update(dt)
 	--compactArray(enemies)
 	-- compactArray(player_spells)
 	sounds["music.wav"]:play()
+	if spawn_new then 
+		spawn_new = false
+		local boop = flux.to({x = 0}, 1.5, { x = 1})
+		boop:oncomplete(function()
+			local bounds = getTableBounds()
+			local xbounds = bounds.x
+			local ybounds = bounds.y
+			local skelly = spawn_skeleton(math.prandom(xbounds.min, xbounds.max), math.prandom(ybounds.min, ybounds.max), "left")
+			addUpdateable(skelly)
+			addRenderable(skelly)
+			addEnemy(skelly)
+
+		end)
+	end
 
 end
 

@@ -49,7 +49,7 @@ local function switch_xy(self)
 end
 
 local function update(self, dt)
-	flux.update(dt)
+	-- flux.update(dt)
 end
 
 function get_random_path(start_point, bounds)
