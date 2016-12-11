@@ -1,3 +1,4 @@
+local images = require("images")
 function player_update(self, dt)
 	key = love.keyboard
 	if key.isDown("w") then
@@ -25,10 +26,13 @@ function player_update(self, dt)
 	keys = {"up", "down", "left", "right"}
 	for i=1, #keys do
 		if key.isDown(keys[i]) and self.can_shoot then
-			local spell = spawn_spell(self.x, self.y, keys[i])
+			off = self.spell_offset
+			local spell = spawn_spell(self.x + off.x, self.y + off.y, keys[i])
 			addRenderable(spell)
 			addUpdateable(spell)
 			self.can_shoot = false
+			sounds["explosion.wav"]:stop()
+			sounds["explosion.wav"]:play()
 			break
 		end
 	end
@@ -54,24 +58,36 @@ end
 
 -- Renderable, Updatable player
 return {
+	-- Renderable
 	x = 0,
 	y = 0,
-	w = 0,
-	h = 0,
-	shot_time = .75,
-	shot_timer = 0,
-	can_shoot = false,
-	scaled = function (self, name)
-		return self[name] * self.scale 
-	end,
 	scale = 2.0,
 	rotation = 0,
-	speed = 200,
+	image = images["Wizard.png"],
+
+	-- Bounding
 	bounds = {
 		x = { min = 0, max = g_width },
 		y = { min = 0, max = g_height },
 	},
-	update = player_update,
+	w = 0,
+	h = 0,
+
+	-- Flags for collections
 	rm_render = false,
 	rm_update = false,
+	rm_collidable = false,
+
+	-- Updatable
+	update = player_update,
+
+	-- Custom player information
+	speed = 200,
+	shot_time = .1,
+	shot_timer = 0,
+	spell_offset = { x = 20, y = 20 },
+	can_shoot = false,
+	scaled = function (self, name)
+		return self[name] * self.scale 
+	end,
 }

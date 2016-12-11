@@ -2,45 +2,24 @@ require("lovedebug")
 require("utils")
 require("tablebackground")
 require("spells")
-player = require("player")
+images = {} -- require("images")
+player = {} -- require("player")
+sounds = {} -- require("sounds")
 
 g_width, g_height  = 0, 0
 
 -- Things that can be rendered with an x, y, and blittable image
 local renderables = {}
 local updateables = {}
+local collidables = {}
 local fs = love.filesystem
 local lava = 0
 local lavaPictureName = "lava.png"
 
 
-images = {}
-sounds = {}
-
 function string.ends(String,End)
    return End=='' or string.sub(String, -string.len(End))==End
 end 
-
-function loadSounds()
-	local sounds = {}
-	for i, file in ipairs(fs.getDirectoryItems("sounds")) do
-		if fs.isFile("sounds/" .. file) and string.ends(file, ".wav") then
-			sounds[file] = love.audio.newSource("sounds/" .. file)
-		end
-	end
-	return sounds
-end
-
-function loadAssetsIntoTable()
-	local images = {}
-	local files = fs.getDirectoryItems("assets")
-	for i, file in ipairs(files) do
-		if fs.isFile("assets/" .. file) and string.ends(file, ".png") then
-			images[file] = love.graphics.newImage("assets/" .. file)
-		end
-	end
-	return images
-end
 
 function love.update(dt)
 	for i, v in ipairs(updateables) do
@@ -75,6 +54,9 @@ end
 function love.load() 
 	love.graphics.setDefaultFilter('linear', 'nearest')
 	love.window.setMode(768, 600)
+	images = require("images")
+	sounds = require("sounds")
+	player = require("player")
 	sounds = loadSounds()
 	images = loadAssetsIntoTable()
 	player.image = images["WizardLightning.png"]
@@ -83,18 +65,28 @@ function love.load()
 	player.x = g_width / 2
 	player.y = g_height / 2 
 	player.w, player.h = player.image:getDimensions()
-	-- player.bounds.x.max = g_height
-	-- player.bounds.y.max = g_width
 	addRenderable(player)
-	table.insert(updateables, player)
+	addUpdateable(player)
 end
 
 function love.draw() 
 	renderTable(lavaPictureName)
 	for i, surface in ipairs(renderables) do
-		love.graphics.draw(surface.image, surface.x, surface.y, surface.rotation, surface.scale)
+		if surface.offset then
+			local offset = surface.offset
+			love.graphics.draw(
+				surface.image,
+				surface.x,
+				surface.y,
+				surface.rotation,
+				surface.scale,
+				surface.scale,
+				offset.x,
+				offset.y)
+		else
+			love.graphics.draw(surface.image, surface.x, surface.y, surface.rotation, surface.scale)
+		end
 	end
-
 end
 
 local update_reqs = {

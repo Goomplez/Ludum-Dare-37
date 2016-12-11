@@ -17,7 +17,7 @@ function offsetByVector (point, angle, length)
 	return point.x + x, point.y + y
 end
 
-function sp.dirToAngle(dir) 
+function dirToAngle(dir) 
 	if dir == "up" then
 		return - 3 * math.pi / 2
 	elseif dir == "down" then
@@ -36,9 +36,13 @@ function spawn_spell(x, y, direction)
 		y = y,
 		image = images["iceball.png"],
 		velocity = 300,
-		rotation = sp.dirToAngle(direction),
+		rotation = dirToAngle(direction),
 		update = sp.update,
 		scale = 2.0,
+		offset = {
+			x = 5,
+			y = 4,
+		},
 		rm_render = false,
 		rm_update = false,
 		rm_collide = false,
