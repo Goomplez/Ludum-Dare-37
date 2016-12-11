@@ -9,6 +9,7 @@ function getTableBounds()
 		y = yBounds
 	}
 end
+
 -- How the table is rendered
 function renderTable()
 	love.graphics.push()
