@@ -41,6 +41,13 @@ function love.update(dt)
 			end
 		end
 	end
+	if player:is_vulnerable() then
+		for i, enemy in ipairs(enemies) do
+			if not enemy.rm_enemy and math.dist(enemy.x, enemy.y, player.x, player.y) < enemy.r then
+				player:harm(1)
+			end
+		end
+	end
 
 	for i, v in ipairs(updateables) do
 		v:update(dt)

@@ -16,17 +16,18 @@ local function player_update(self, dt)
 		self.scale.x = math.copysign(self.scale.x, -1)
 	end
 
-	if self.hit_timer > self.hit_delay then
-		if key.isDown("-") then
-			self.HP = self.HP - 1
-			self.hit_timer = 0
-		end
-		if key.isDown("=") then
-			self.HP = self.HP + 1
-			self.hit_timer = 0
-		end
-	else
+	-- Tick up the invuln frames
+	if self.hit_timer <= self.hit_delay then
 		self.hit_timer = self.hit_timer + dt
+		if self.hit_timer >= self.hit_delay then
+			self.rm_render = false
+			addRenderable(self)
+		else
+			self.rm_render = not self.rm_render
+			if not self.rm_render then
+				addRenderable(self)
+			end
+		end
 	end
 
 	if not self.can_shoot then
@@ -121,6 +122,12 @@ return {
 	hit_timer = 2.1,
 	hit_delay = 2,
 	is_vulnerable = function (self)
-		return hit_timer > hit_delay
+		return self.hit_timer > self.hit_delay
+	end,
+	harm = function (self, damage)
+		self.HP = self.HP - 1
+		self.hit_timer = 0
+		sounds["hurt2.wav"]:play()
 	end
+
 }
