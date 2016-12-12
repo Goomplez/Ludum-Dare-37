@@ -1,0 +1,12 @@
+# Ideas for expansion post LD37
+
+## Modulated difficulty 
+Each wave, you go through process of choosing how many enemies you want to fight during the wave like so:
+
+A fate die and the barrel of fate are situated on the two halves of the arena. Every time you shoot the fate die, it spins a die into the barrel. When you shoot the barrel, it splits of into a barrel for each die you spun from the fate die, and then spawns enemies on the stage based on the dice.
+
+You need to kill 100 enemies to face the dragon, but the rating your recieve at the end is based soley on the size of the highest wave you survive.
+
+## Player upgrade ideas
+
+Spells with different firing arcs, melee attacks, shields, etc.
