@@ -18,9 +18,17 @@ local fs = love.filesystem
 local spawned_enemies = 0
 local paused = false
 local game_over = false
+local game_over_timer = 0
+local shake_timer = .26
+local shake_time = .125
+local shake_mag = 2
 
 local lava = 0
 local lavaPictureName = "lava.png"
+
+function table.clear(tab)
+	for k,v in pairs(tab) do tab[k]=nil end
+end
 
 function string.ends(String,End)
    return End=='' or string.sub(String, -string.len(End))==End
@@ -30,17 +38,32 @@ function love.keypressed(key, scancode, isrepeat)
 	if scancode == "p" then
 		paused = not paused
 	end
+
+	if scancode == "return" and player.HP == 0 and game_over_timer > 1 then
+		spawned_enemies = 0
+		game_over_timer = 0
+		table.clear(renderables)
+		table.clear(updateables)
+		table.clear(enemies)
+		table.clear(player_spells)
+		player.HP = 4
+		loadStart()
+	end
 end
 
 function love.update(dt)
+	if shake_timer < shake_time then
+		shake_timer = shake_timer + dt
+	end
 	sounds["music2.wav"]:play()
 	if paused then
 		return
 	end
 	if player.HP == 0 then
-
+		game_over_timer = game_over_timer + dt
 		return
 	end
+
 
 	flux.update(dt)
 	local spawn_new = false
@@ -51,6 +74,7 @@ function love.update(dt)
 				shot.rm_render = true
 				shot.rm_player_spell = true
 				enemy:harm(1)
+				shake_timer = 0
 				if enemy.rm_enemy then
 					spawn_new = true
 				end
@@ -104,29 +128,35 @@ function love.update(dt)
 			end)
 		end
 	end
-
 end
 
 function loadStart() 
+	load_lava_table()
 	player.bounds = getTableBounds()
+	player.image = images["WizardLightning.png"]
 	g_height, g_width = love.graphics.getDimensions()
 	player.x = g_width / 2
 	player.y = g_height / 2 
 	player.w, player.h = player.image:getDimensions()
 	addRenderable(player)
 	addUpdateable(player)
+
 	local bounds = getTableBounds()
+
 	local skel_x = math.prandom(bounds.x.min, bounds.x.max)
 	local skel_y = math.prandom(bounds.y.min, bounds.y.max)
 	local skelly = spawn_skeleton(skel_x, skel_y, "left")
 	addEnemy(skelly)
+
 	local gob_x = math.prandom(bounds.x.min, bounds.x.max)
 	local gob_y = math.prandom(bounds.y.min, bounds.y.max)
 	local gobs = spawn_goblin(gob_x, gob_y, "left")
 	addEnemy(gobs)
+
 	local z_x = math.prandom(bounds.x.min, bounds.x.max)
 	local z_y = math.prandom(bounds.y.min, bounds.y.max)
 	local brainzzzz = spawn_zombie(z_x, z_y, "left")
+	load_hp_bar()
 	addEnemy(brainzzzz)
 end
 
@@ -141,14 +171,17 @@ function love.load()
 	sounds = require("sounds")
 	player = require("player")
 	require("player_health")
-	player.image = images["WizardLightning.png"]
+	loadStart()
 	sounds["explosion.wav"]:setVolume(1.5)
 	sounds["music.wav"]:setVolume(.25)
 	sounds["music2.wav"]:setVolume(.15)
-	loadStart()
 end
 
 function love.draw() 
+	if shake_timer < shake_time then
+		love.graphics.push()
+		love.graphics.translate(math.prandom(-shake_mag, shake_mag), math.prandom(-shake_mag, shake_mag))
+	end
 	--renderTable(lavaPictureName)
 	for i, surface in ipairs(renderables) do
 		if surface.render then
@@ -170,9 +203,19 @@ function love.draw()
 			love.graphics.draw(surface.image, surface.x, surface.y, surface.rotation, surface.scale.x, surface.scale.y)
 		end
 	end
+	if player.HP == 0 then
+		w, h = images["game_over.png"]:getDimensions()
+		love.graphics.draw(images["game_over.png"], g_height / 2, g_width / 2, 0, 4, 4, w/2, h/2)
+	end
 	love.graphics.print("Spells:".. #player_spells, 0, 0)
 	love.graphics.print("Renderables:" .. #renderables, 0, 10)
-	love.graphics.print("Updateables:".. #updateables, 0, 20)
+	love.graphics.print("Updateables:" .. #updateables, 0, 20)
+	love.graphics.print("Enemies:".. #enemies, 0, 30)
+	love.graphics.print("Enemies Spawned:".. spawned_enemies, 50, 0)
+
+	if shake_timer < shake_time then
+		love.graphics.pop()
+	end
 end
 
 local update_reqs = {

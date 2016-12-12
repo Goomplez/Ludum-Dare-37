@@ -86,5 +86,8 @@ local lavaTable = {
 	rm_update = false,
 }
 
-addRenderable(lavaTable)
-addUpdateable(lavaTable)
+
+function load_lava_table()
+	addRenderable(lavaTable)
+	addUpdateable(lavaTable)
+end

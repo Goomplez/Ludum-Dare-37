@@ -110,6 +110,8 @@ function spawn_goblin(x,y, dir)
 		traveling_on = nil,
 		travel_timer = 0,
 		harm = function (self)
+			sounds["hurt1.wav"]:stop()
+			sounds["hurt1.wav"]:play()
 			self.rm_update = true
 			self.rm_render = true
 			self.rm_enemy = true

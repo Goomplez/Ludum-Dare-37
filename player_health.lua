@@ -33,5 +33,7 @@ local HP_bar = {
 	rm_render = false,
 }
 
-addRenderable(HP_bar)
-addUpdateable(HP_bar)
+function load_hp_bar()
+	addRenderable(HP_bar)
+	addUpdateable(HP_bar)
+end

@@ -5,6 +5,9 @@ require("enemies")
 
 local function harm_skeleton(self, amount)
 	if self.hurt_timer >= self.hurt_time then
+		sounds["hurt1.wav"]:stop()
+		sounds["hurt1.wav"]:play()
+	
 		self.HP = self.HP - 1
 		self.hurt_timer = 0
 		if self.HP == 0 then

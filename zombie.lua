@@ -5,6 +5,8 @@ local player = require("player")
 
 local function harm_z(self)
 	if self.hurt_timer >= self.hurt_time then
+		sounds["hurt1.wav"]:stop()
+		sounds["hurt1.wav"]:play()
 		self.HP = self.HP - 1
 		self.hurt_timer = 0
 		if self.HP == 0 then
@@ -38,7 +40,6 @@ local function update_z(self, dt)
 end
 
 function spawn_zombie(x, y, dir)
-	-- body
 	local zzombie = {
 		-- Renderable
 		x = x,

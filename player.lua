@@ -77,6 +77,7 @@ local function player_update(self, dt)
 end
 
 -- Renderable, Updatable player
+function get_new_player( ... )
 return {
 	-- Renderable
 	x = 0,
@@ -126,8 +127,11 @@ return {
 	end,
 	harm = function (self, damage)
 		self.HP = self.HP - 1
+		self.HP = math.clamp(0, self.HP, 4)
 		self.hit_timer = 0
 		sounds["hurt2.wav"]:play()
 	end
-
 }
+end
+
+return get_new_player()
