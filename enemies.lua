@@ -3,7 +3,7 @@ local images = require("images")
 local sounds = require("sounds")
 local flux = require("flux")
 
-local function next_path(self)
+function next_path(self)
 	-- Current x and y are set up already
 	self.path.selectedIdx = self.path.selectedIdx + 1
 	if self.path.selectedIdx > #self.path then
@@ -34,7 +34,7 @@ local function next_path(self)
 	end)
 end
 
-local function switch_xy(self)
+function switch_xy(self)
 	local dest_pair = self.path:current()
 	if self.traveling_on == "x" then
 		self.traveling_on = "y"
@@ -79,6 +79,7 @@ end
 
 -- Stub for skeleton, goblin
 local function update(self, dt)
+
 end
 
 
@@ -127,47 +128,3 @@ function spawn_goblin(x,y, dir)
 	-- body
 end
 
-function spawn_skeleton(x, y, dir)
-
-	local skel = {
-		-- Renderable
-		x = x,
-		y = y,
-		image = images["skeleton.png"],
-		scale = {
-			x = 2.0,
-			y = 2.0,
-		},
-		offset = {
-			x = 7,
-			y = 10, 
-		},
-		r = 10,
-		rotation = dirToAngle(dir),
-		tween_chain = { idx= 1, next_path, switch_xy },
-
-		-- Collideable
-		collides = collides,
-		-- Update
-		update = update,
-		-- Skeleton AI info
-		path = get_random_path({x = x, y = y} , getTableBounds()),
-		traveling_on = "",
-		travel_timer = 0,
-		prev_x  = x,
-		prev_y = y,
-		harm = function (self)
-			self.rm_update = true
-			self.rm_render = true
-			self.rm_enemy = true
-		end,
-		-- Used for the tweening function to call per frame
-		next_path = next_path,
-		switch_xy = switch_xy,
-		rm_update = false,
-		rm_render = false,
-		rm_enemy  = false,
-	}
-	skel:next_path()
-	return skel
-end

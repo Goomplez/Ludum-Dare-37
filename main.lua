@@ -15,7 +15,9 @@ local enemies = {}
 local player_spells = {}
 local enemy_spells = {}
 local fs = love.filesystem
+local spawned_enemies = 0
 local paused = false
+local game_over = false
 
 local lava = 0
 local lavaPictureName = "lava.png"
@@ -35,6 +37,11 @@ function love.update(dt)
 	if paused then
 		return
 	end
+	if player.HP == 0 then
+
+		return
+	end
+
 	flux.update(dt)
 	local spawn_new = false
 	for i, enemy in ipairs(enemies) do
@@ -75,6 +82,7 @@ function love.update(dt)
 	nilTable(enemies, "rm_enemy")
 	nilTable(player_spells, "rm_player_spell")
 	if spawn_new then 
+		spawned_enemies = spawned_enemies + 1
 		spawn_new = false
 		local boop = flux.to({x = 0}, 1.5, { x = 1})
 		boop:oncomplete(function()
@@ -85,21 +93,21 @@ function love.update(dt)
 			local enemy = spawn(math.prandom(xbounds.min, xbounds.max), math.prandom(ybounds.min, ybounds.max), "left")
 			addEnemy(enemy)
 		end)
+		if spawned_enemies % 10 == 0 then
+			boop:oncomplete(function()
+				local bounds = getTableBounds()
+				local xbounds = bounds.x
+				local ybounds = bounds.y
+				local spawn = ({spawn_skeleton, spawn_goblin, spawn_zombie})[math.random(3)]
+				local enemy = spawn(math.prandom(xbounds.min, xbounds.max), math.prandom(ybounds.min, ybounds.max), "left")
+				addEnemy(enemy)
+			end)
+		end
 	end
 
 end
 
-function love.load() 
-	love.graphics.setDefaultFilter('linear', 'nearest')
-	love.window.setMode(768, 600)
-	require("tablebackground")
-	require("enemies")
-	require("zombie")
-	images = require("images")
-	sounds = require("sounds")
-	player = require("player")
-	require("player_health")
-	player.image = images["WizardLightning.png"]
+function loadStart() 
 	player.bounds = getTableBounds()
 	g_height, g_width = love.graphics.getDimensions()
 	player.x = g_width / 2
@@ -120,9 +128,24 @@ function love.load()
 	local z_y = math.prandom(bounds.y.min, bounds.y.max)
 	local brainzzzz = spawn_zombie(z_x, z_y, "left")
 	addEnemy(brainzzzz)
+end
+
+function love.load() 
+	love.graphics.setDefaultFilter('linear', 'nearest')
+	love.window.setMode(768, 600)
+	require("tablebackground")
+	require("enemies")
+	require("zombie")
+	require("skeleton")
+	images = require("images")
+	sounds = require("sounds")
+	player = require("player")
+	require("player_health")
+	player.image = images["WizardLightning.png"]
 	sounds["explosion.wav"]:setVolume(1.5)
 	sounds["music.wav"]:setVolume(.25)
 	sounds["music2.wav"]:setVolume(.15)
+	loadStart()
 end
 
 function love.draw() 
