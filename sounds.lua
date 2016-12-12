@@ -1,3 +1,4 @@
+require("utils")
 -- Load sounds here
 local fs = love.filesystem
 local sounds = {}

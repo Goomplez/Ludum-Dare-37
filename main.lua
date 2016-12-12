@@ -4,7 +4,8 @@ require("spells")
 flux = require("flux")
 images = {} -- require("images")
 player = {} -- require("player")
-sounds = {} -- require("sounds")
+sounds = require("sounds")
+local count_down = {} -- require("count_down")
 
 g_width, g_height  = 0, 0
 
@@ -18,28 +19,45 @@ local fs = love.filesystem
 local spawned_enemies = 0
 local paused = false
 local game_over = false
-local game_over_timer = 0
+local end_game_timer = 0
 local shake_timer = .26
 local shake_time = .125
 local shake_mag = 2
+local enemy_num = 100
+local hp_boost = 10
+local hp_times = 0
+local has_boss = false
+music = sounds[({"music.wav", "music.wav"})[math.random(2)]]
 
+local function spawn() 
+	local rand2 = math.prandom
+	if --[[math.random(5) == 5]] true then
+		for i=1, math.clamp(1, math.log10(#enemies), 10), 1 do
+			addEnemy(spawn_fireball(rand2(32, 32 * 11 * 2), rand2(0, -10), "down"))
+		end
+	end
+	local spawns = {
+		spawn_skeleton, spawn_goblin, spawn_zombie}
+	return spawns[math.random(#spawns)]
+end
 local lava = 0
 local lavaPictureName = "lava.png"
-
-function table.clear(tab)
-	for k,v in pairs(tab) do tab[k]=nil end
-end
-
-function string.ends(String,End)
-   return End=='' or string.sub(String, -string.len(End))==End
-end 
 
 function love.keypressed(key, scancode, isrepeat)
 	if scancode == "p" then
 		paused = not paused
 	end
-
-	if scancode == "return" and player.HP == 0 and game_over_timer > 1 then
+	if scancode == "q" then
+		love.event.quit()
+	end
+--[[
+	if scancode == "return" then
+		print ("HP", player.HP)
+		print ("HP", spawned_enemies)
+		print ("HP", enemy_num)
+	end
+--]]
+	if scancode == "return" and (player.HP == 0 or spawned_enemies == enemy_num) and end_game_timer > 1 then
 		spawned_enemies = 0
 		game_over_timer = 0
 		table.clear(renderables)
@@ -55,12 +73,12 @@ function love.update(dt)
 	if shake_timer < shake_time then
 		shake_timer = shake_timer + dt
 	end
-	sounds["music2.wav"]:play()
+	music:play()
 	if paused then
 		return
 	end
-	if player.HP == 0 then
-		game_over_timer = game_over_timer + dt
+	if player.HP == 0 or spawned_enemies >= enemy_num then
+		end_game_timer = end_game_timer + dt
 		return
 	end
 
@@ -75,7 +93,7 @@ function love.update(dt)
 				shot.rm_player_spell = true
 				enemy:harm(1)
 				shake_timer = 0
-				if enemy.rm_enemy then
+				if enemy.rm_enemy and enemy.rm_player_spell == nil then
 					spawn_new = true
 				end
 			end
@@ -107,23 +125,28 @@ function love.update(dt)
 	nilTable(player_spells, "rm_player_spell")
 	if spawn_new then 
 		spawned_enemies = spawned_enemies + 1
+		if spawned_enemies % (hp_boost + hp_times) == 0 then
+			hp_times = hp_times + 2
+			player:harm(-1)
+		end
+		count_down:tick()
 		spawn_new = false
 		local boop = flux.to({x = 0}, 1.5, { x = 1})
 		boop:oncomplete(function()
+			if has_boss then return end
 			local bounds = getTableBounds()
 			local xbounds = bounds.x
 			local ybounds = bounds.y
-			local spawn = ({spawn_skeleton, spawn_goblin, spawn_zombie})[math.random(3)]
-			local enemy = spawn(math.prandom(xbounds.min, xbounds.max), math.prandom(ybounds.min, ybounds.max), "left")
+			local enemy = spawn()(math.prandom(xbounds.min, xbounds.max), math.prandom(ybounds.min, ybounds.max), "left")
 			addEnemy(enemy)
 		end)
 		if spawned_enemies % 10 == 0 then
 			boop:oncomplete(function()
+				if has_boss then return end
 				local bounds = getTableBounds()
 				local xbounds = bounds.x
 				local ybounds = bounds.y
-				local spawn = ({spawn_skeleton, spawn_goblin, spawn_zombie})[math.random(3)]
-				local enemy = spawn(math.prandom(xbounds.min, xbounds.max), math.prandom(ybounds.min, ybounds.max), "left")
+				local enemy = spawn()(math.prandom(xbounds.min, xbounds.max), math.prandom(ybounds.min, ybounds.max), "left")
 				addEnemy(enemy)
 			end)
 		end
@@ -132,6 +155,7 @@ end
 
 function loadStart() 
 	load_lava_table()
+	count_down:setCountDown(enemy_num)
 	player.bounds = getTableBounds()
 	player.image = images["WizardLightning.png"]
 	g_height, g_width = love.graphics.getDimensions()
@@ -158,11 +182,12 @@ function loadStart()
 	local brainzzzz = spawn_zombie(z_x, z_y, "left")
 	load_hp_bar()
 	addEnemy(brainzzzz)
+	addRenderable(count_down)
 end
 
 function love.load() 
 	love.graphics.setDefaultFilter('linear', 'nearest')
-	love.window.setMode(768, 600)
+	love.window.setMode(768, 550)
 	require("tablebackground")
 	require("enemies")
 	require("zombie")
@@ -170,6 +195,7 @@ function love.load()
 	images = require("images")
 	sounds = require("sounds")
 	player = require("player")
+	count_down = require("countdown")
 	require("player_health")
 	loadStart()
 	sounds["explosion.wav"]:setVolume(1.5)
@@ -206,12 +232,17 @@ function love.draw()
 	if player.HP == 0 then
 		w, h = images["game_over.png"]:getDimensions()
 		love.graphics.draw(images["game_over.png"], g_height / 2, g_width / 2, 0, 4, 4, w/2, h/2)
+	elseif spawned_enemies >= enemy_num then
+		w, h = images["you_win.png"]:getDimensions()
+		love.graphics.draw(images["you_win.png"], g_height / 2, g_width / 2, 0, 4, 4, w/2, h/2)
 	end
+	--[[
 	love.graphics.print("Spells:".. #player_spells, 0, 0)
 	love.graphics.print("Renderables:" .. #renderables, 0, 10)
 	love.graphics.print("Updateables:" .. #updateables, 0, 20)
-	love.graphics.print("Enemies:".. #enemies, 0, 30)
+	love.graphics.print("Enemies:" .. #enemies, 0, 30)
 	love.graphics.print("Enemies Spawned:".. spawned_enemies, 50, 0)
+	--]]
 
 	if shake_timer < shake_time then
 		love.graphics.pop()

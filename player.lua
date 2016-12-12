@@ -126,10 +126,14 @@ return {
 		return self.hit_timer > self.hit_delay
 	end,
 	harm = function (self, damage)
-		self.HP = self.HP - 1
+		self.HP = self.HP - damage
 		self.HP = math.clamp(0, self.HP, 4)
 		self.hit_timer = 0
-		sounds["hurt2.wav"]:play()
+		if damage >= 0 then
+			sounds["hurt2.wav"]:play()
+		else
+			sounds["pickup.wav"]:play()
+		end
 	end
 }
 end

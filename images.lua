@@ -8,7 +8,7 @@ for i, file in ipairs(files) do
 	end
 end
 local to_darken = {
-	{ name ="wood.png", factor = .5 },
+	{ name = "wood.png", factor = .5 },
 	{ name = "wood-vertical.png", factor = .5},
 	{ name = "lava.png", factor = .85},
 	{ name = "lava-dark.png", factor = .85},

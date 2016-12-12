@@ -116,3 +116,11 @@ function dirToAngle(dir)
 		return 0
 	end
 end
+
+function table.clear(tab)
+	for k,v in pairs(tab) do tab[k]=nil end
+end
+
+function string.ends(String,End)
+   return End=='' or string.sub(String, -string.len(End))==End
+end 
