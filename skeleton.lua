@@ -1,9 +1,9 @@
--- Zombie logic
+-- Skeleton
 local images = require("images")
 local sounds = require("sounds")
-local player = require("player")
+require("enemies")
 
-local function harm_z(self)
+local function harm_skeleton(self, amount)
 	if self.hurt_timer >= self.hurt_time then
 		self.HP = self.HP - 1
 		self.hurt_timer = 0
@@ -15,17 +15,8 @@ local function harm_z(self)
 		end
 	end
 end
--- Update fuction for zombie
-local function update_z(self, dt)
-	local angle = math.angle(self.x, self.y, player.x, player.y)
-	local oldX = self.x
-	self.x, self.y = offsetByVector({x = self.x, y = self.y}, angle, self.speed * dt)
-	if (oldX - self.x) > 0 then
-		self.scale.x = math.copysign(self.scale.x, 1)
-	else 
-		self.scale.x = math.copysign(self.scale.x, -1)
-	end
 
+local function update_skeleton(self, dt)
 	if self.hurt_timer < self.hurt_time then
 		self.hurt_timer = self.hurt_timer + dt
 		if self.hurt_timer >= self.hurt_time then
@@ -35,39 +26,53 @@ local function update_z(self, dt)
 			self.rm_render = true
 		end
 	end
+
 end
 
-function spawn_zombie(x, y, dir)
-	-- body
-	local zzombie = {
+function spawn_skeleton(x, y, dir)
+
+	local skel = {
 		-- Renderable
 		x = x,
 		y = y,
-		image = images["zombie-invert.png"],
+		image = images["skeleton.png"],
 		scale = {
 			x = 2.0,
 			y = 2.0,
 		},
 		offset = {
-			x = 10,
+			x = 7,
 			y = 10, 
 		},
+		r = 10,
 		rotation = dirToAngle(dir),
-		-- Enemy
-		r = 20,
-		speed = 128,
+		tween_chain = { idx= 1, next_path, switch_xy },
+
+		-- Collideable
+		collides = collides,
 		-- Update
-		update = update_z,
-		-- Zombie
-		HP = 5,
+		update = update_skeleton,
+		-- Skeleton AI info
+		path = get_random_path({x = x, y = y} , getTableBounds()),
+		traveling_on = "",
+		travel_timer = 0,
+		prev_x  = x,
+		prev_y = y,
+
+		-- Harming
+		harm = harm_skeleton,
+		-- HP
+		HP = 3,
 		hurt_time = .1,
 		hurt_timer = .11,
-		harm = harm_z,
 
-		-- Collection flags
-		rm_render = false,
+		-- Used for the tweening function to call per frame
+		next_path = next_path,
+		switch_xy = switch_xy,
 		rm_update = false,
-		rm_enemy = false,
+		rm_render = false,
+		rm_enemy  = false,
 	}
-	return zzombie
+	skel:next_path()
+	return skel
 end
