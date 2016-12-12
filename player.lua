@@ -39,21 +39,23 @@ local function player_update(self, dt)
 	end
 
 
-	keys = {"up", "down", "left", "right"}
-	for i=1, #keys do
-		if key.isDown(keys[i]) and self.can_shoot then
-			--off = self.spell_offset
-			local spell = spawn_spell(
-				self.x,-- + off.x, 
-				self.y, -- + off.y,
-				 keys[i])
-			addRenderable(spell)
-			addUpdateable(spell)
-			addPlayerSpell(spell)
-			self.can_shoot = false
-			sounds["explosion.wav"]:stop()
-			sounds["explosion.wav"]:play()
-			break
+	if curr_music == "music2.wav" then
+		keys = {"up", "down", "left", "right"}
+		for i=1, #keys do
+			if key.isDown(keys[i]) and self.can_shoot then
+				--off = self.spell_offset
+				local spell = spawn_spell(
+					self.x,-- + off.x, 
+					self.y, -- + off.y,
+					 keys[i])
+				addRenderable(spell)
+				addUpdateable(spell)
+				addPlayerSpell(spell)
+				self.can_shoot = false
+				sounds["explosion.wav"]:stop()
+				sounds["explosion.wav"]:play()
+				break
+			end
 		end
 	end
 

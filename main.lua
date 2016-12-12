@@ -27,7 +27,8 @@ local enemy_num = 100
 local hp_boost = 10
 local hp_times = 0
 local has_boss = false
-music = sounds[({"music.wav", "music.wav"})[math.random(2)]]
+curr_music = ({"music2.wav", "music.wav"})[math.random(2)]
+local music = sounds[curr_music]
 
 local function spawn() 
 	local rand2 = math.prandom
@@ -72,6 +73,10 @@ end
 function love.update(dt)
 	if shake_timer < shake_time then
 		shake_timer = shake_timer + dt
+	end
+	if music:isStopped() then
+		curr_music = ({"music2.wav", "music.wav"})[math.random(2)]
+		music = sounds[curr_music]
 	end
 	music:play()
 	if paused then
@@ -125,8 +130,8 @@ function love.update(dt)
 	nilTable(player_spells, "rm_player_spell")
 	if spawn_new then 
 		spawned_enemies = spawned_enemies + 1
-		if spawned_enemies % (hp_boost + hp_times) == 0 then
-			hp_times = hp_times + 2
+		if spawned_enemies >= hp_boost then
+			hp_boost = 10 + 1.125 * hp_boost
 			player:harm(-1)
 		end
 		count_down:tick()
@@ -162,6 +167,7 @@ function loadStart()
 	player.x = g_width / 2
 	player.y = g_height / 2 
 	player.w, player.h = player.image:getDimensions()
+	hp_boost = 10
 	addRenderable(player)
 	addUpdateable(player)
 

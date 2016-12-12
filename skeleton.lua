@@ -1,7 +1,58 @@
 -- Skeleton
 local images = require("images")
 local sounds = require("sounds")
-require("enemies")
+
+local function next_path(self)
+	-- Current x and y are set up already
+	self.path.selectedIdx = self.path.selectedIdx + 1
+	if self.path.selectedIdx > #self.path then
+		self.path.selectedIdx = 1
+	end
+	local dest_pair = self.path:current()
+	local dest = {}
+	if self.traveling_on then
+		self.traveling_on = ({"x", "y"})[math.random(2)]
+		local dimension = self.traveling_on
+		dest[dimension] = dest_pair[dimension]
+	else
+		dest.x = dest_pair.x
+		dest.y = dest_pair.y
+	end
+	if dest.x then
+		self.scale.x = math.copysign(self.scale.x, self.x - dest.x)
+	end
+
+	self.tween = flux.to(self, dest_pair.time, dest)
+	self.tween:ease("linear")
+	self.tween:oncomplete(function()
+		if self.traveling_on then
+			self:switch_xy()
+		else 
+			self:next_path()
+		end
+	end)
+end
+
+local function switch_xy(self)
+	local dest_pair = self.path:current()
+	if self.traveling_on == "x" then
+		self.traveling_on = "y"
+	else
+		self.traveling_on = "x"
+	end
+	local dimension = self.traveling_on
+	local dest = {}
+	dest[dimension] = dest_pair[dimension]
+	if dest.x then
+		self.scale.x = math.copysign(self.scale.x, self.x - dest.x)
+	end
+	self.tween = flux.to(self, dest_pair.time, dest)
+	self.tween:ease("linear")
+	self.tween:oncomplete(function()
+		self:next_path()
+	end)
+end
+
 
 local function harm_skeleton(self, amount)
 	if self.hurt_timer >= self.hurt_time then
