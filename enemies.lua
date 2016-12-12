@@ -2,7 +2,6 @@
 local images = require("images")
 local sounds = require("sounds")
 local flux = require("flux")
-local player = require("player")
 
 local function next_path(self)
 	-- Current x and y are set up already
@@ -16,7 +15,6 @@ local function next_path(self)
 		self.traveling_on = ({"x", "y"})[math.random(2)]
 		local dimension = self.traveling_on
 		dest[dimension] = dest_pair[dimension]
-
 	else
 		dest.x = dest_pair.x
 		dest.y = dest_pair.y
@@ -83,66 +81,6 @@ end
 local function update(self, dt)
 end
 
-local function harm_z(self)
-	if self.hurt_timer >= self.hurt_time then
-		self.HP = self.HP - 1
-		self.hurt_timer = 0
-		if self.HP == 0 then
-			self.hurt_timer = self.hurt_time + 0.001	
-			self.rm_render = true
-			self.rm_update = true
-			self.rm_enemy = true
-		end
-	end
-end
--- Update fuction for zombie
-local function brainz(self, dt)
-	local angle = math.angle(self.x, self.y, player.x, player.y)
-	self.x, self.y = offsetByVector({x = self.x, y = self.y}, angle, self.speed * dt)
-	if self.hurt_timer < self.hurt_time then
-		self.hurt_timer = self.hurt_timer + dt
-		if self.hurt_timer >= self.hurt_time then
-			self.rm_render = false
-			addRenderable(self)
-		else
-			self.rm_render = true
-		end
-	end
-
-end
-
-function spawn_zombie(x, y, dir)
-	-- body
-	local zzombie = {
-		-- Renderable
-		x = x,
-		y = y,
-		image = images["zombie-invert.png"],
-		scale = {
-			x = 2.0,
-			y = 2.0,
-		},
-		offset = {
-			x = 10,
-			y = 10, 
-		},
-		rotation = dirToAngle(dir),
-		-- Enemy
-		r = 20,
-		speed = 128,
-		-- Update
-		update = brainz,
-		HP = 20,
-		hurt_time = .1,
-		hurt_timer = .11,
-		harm = harm_z,
-
-		rm_render = false,
-		rm_update = false,
-		rm_enemy = false,
-	}
-	return zzombie
-end
 
 function spawn_goblin(x,y, dir)
 	local gob = {
@@ -170,6 +108,11 @@ function spawn_goblin(x,y, dir)
 		path = get_random_path({x = x, y = y} , getTableBounds()),
 		traveling_on = nil,
 		travel_timer = 0,
+		harm = function (self)
+			self.rm_update = true
+			self.rm_render = true
+			self.rm_enemy = true
+		end,
 		prev_x  = x,
 		prev_y = y,
 		-- Used for the tweening function to call per frame
@@ -213,6 +156,11 @@ function spawn_skeleton(x, y, dir)
 		travel_timer = 0,
 		prev_x  = x,
 		prev_y = y,
+		harm = function (self)
+			self.rm_update = true
+			self.rm_render = true
+			self.rm_enemy = true
+		end,
 		-- Used for the tweening function to call per frame
 		next_path = next_path,
 		switch_xy = switch_xy,

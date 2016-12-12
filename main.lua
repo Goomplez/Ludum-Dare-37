@@ -1,6 +1,5 @@
 -- require("lovedebug")
 require("utils")
--- require("tablebackground")
 require("spells")
 flux = require("flux")
 images = {} -- require("images")
@@ -16,6 +15,7 @@ local enemies = {}
 local player_spells = {}
 local enemy_spells = {}
 local fs = love.filesystem
+local paused = false
 
 local lava = 0
 local lavaPictureName = "lava.png"
@@ -24,7 +24,17 @@ function string.ends(String,End)
    return End=='' or string.sub(String, -string.len(End))==End
 end 
 
+function love.keypressed(key, scancode, isrepeat)
+	if scancode == "p" then
+		paused = not paused
+	end
+end
+
 function love.update(dt)
+	sounds["music2.wav"]:play()
+	if paused then
+		return
+	end
 	flux.update(dt)
 	local spawn_new = false
 	for i, enemy in ipairs(enemies) do
@@ -33,11 +43,10 @@ function love.update(dt)
 				shot.rm_update = true
 				shot.rm_render = true
 				shot.rm_player_spell = true
-
-				enemy.rm_render = true
-				enemy.rm_update = true
-				enemy.rm_enemy = true
-				spawn_new = true
+				enemy:harm(1)
+				if enemy.rm_enemy then
+					spawn_new = true
+				end
 			end
 		end
 	end
@@ -65,7 +74,6 @@ function love.update(dt)
 	nilTable(renderables, "rm_render")
 	nilTable(enemies, "rm_enemy")
 	nilTable(player_spells, "rm_player_spell")
-	sounds["music.wav"]:play()
 	if spawn_new then 
 		spawn_new = false
 		local boop = flux.to({x = 0}, 1.5, { x = 1})
@@ -86,6 +94,7 @@ function love.load()
 	love.window.setMode(768, 600)
 	require("tablebackground")
 	require("enemies")
+	require("zombie")
 	images = require("images")
 	sounds = require("sounds")
 	player = require("player")
@@ -113,6 +122,7 @@ function love.load()
 	addEnemy(brainzzzz)
 	sounds["explosion.wav"]:setVolume(1.5)
 	sounds["music.wav"]:setVolume(.25)
+	sounds["music2.wav"]:setVolume(.15)
 end
 
 function love.draw() 
@@ -172,6 +182,7 @@ local enemy_reqs = {
 	x = "number",
 	y = "number",
 	r = "number",
+	harm = "function",
 }
 
 local player_spell_reqs = {

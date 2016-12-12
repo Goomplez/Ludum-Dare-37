@@ -1,4 +1,4 @@
--- Load sounds here.
+-- Load sounds here
 local fs = love.filesystem
 local sounds = {}
 for i, file in ipairs(fs.getDirectoryItems("sounds")) do

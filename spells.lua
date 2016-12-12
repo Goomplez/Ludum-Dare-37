@@ -1,6 +1,3 @@
--- local sp = {}
-
--- Valid angles are "Up", "Down", "Right", "Left"
 local function update(self, dt) 
 	self.x, self.y = offsetByVector(self, self.rotation + (math.pi), dt * self.velocity)
 
