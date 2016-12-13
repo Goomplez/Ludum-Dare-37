@@ -11,7 +11,7 @@ local control = ({
 	"red-potion.png",
 	"bomb.png",
 	"coin.png",
-})[3]
+})[love.math.random(5)]
 
 function render_menu()
 
