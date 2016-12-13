@@ -24,7 +24,7 @@ local end_game_timer = 0
 local shake_timer = .26
 local shake_time = .125
 local shake_mag = 2
-local enemy_num = 100 
+local enemy_num = 100
 local hp_boost = 10
 local hp_times = 0
 local has_boss = false
@@ -81,8 +81,8 @@ function love.keypressed(key, scancode, isrepeat)
 		print ("HP", enemy_num)
 	end
 --]]
-	if scancode == "return" and (player.HP == 0 or (spawned_enemies >= enemy_num and dragon.HP <= 0)  then
-		love.event.quit("reset")
+	if scancode == "return" and (player.HP == 0 or (spawned_enemies >= enemy_num and dragon.HP <= 0))  then
+		love.event.quit("restart")
 		--[[
 		spawned_enemies = 0
 		game_over_timer = 0
