@@ -24,7 +24,7 @@ local end_game_timer = 0
 local shake_timer = .26
 local shake_time = .125
 local shake_mag = 2
-local enemy_num = 100
+local enemy_num = 0
 local hp_boost = 10
 local hp_times = 0
 local has_boss = false
@@ -39,7 +39,13 @@ local rand2 = math.prandom
 
 
 local function get_dragon_ball()
-	return spawn_fireball(rand2(32 - dragon.x , dragon.x + 32), rand2(0, 10), "down")
+	local bounds = getTableBounds()
+	if is_boss then
+		return spawn_fireball(rand2(32 - dragon.x , dragon.x + 32), rand2(0, 10), "down")
+	else
+		return spawn_fireball(rand2(bounds.x.min, bounds.x.max), rand2(0, -10), "down")
+	end
+
 end
 
 function get_boss_attack(dt)
@@ -102,9 +108,6 @@ function love.update(dt)
 	end
 
 	flux.update(dt)
-	if is_boss then
-		get_boss_attack(dt)
-	end
 	local spawn_new = false
 	for i, enemy in ipairs(enemies) do
 		for i, shot in ipairs(player_spells) do
@@ -127,7 +130,6 @@ function love.update(dt)
 			end
 		end
 	end
-
 	for i, v in ipairs(updateables) do
 		v:update(dt)
 	end
