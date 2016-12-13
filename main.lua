@@ -267,11 +267,11 @@ function love.draw()
 		end
 	end
 	if player.HP == 0 then
-		w, h = images["game_over.png"]:getDimensions()
-		love.graphics.draw(images["game_over.png"], g_height / 2, g_width / 2, 0, 4, 4, w/2, h/2)
+		w, h = images["game_over2.png"]:getDimensions()
+		love.graphics.draw(images["game_over2.png"], g_height / 2, g_width / 2, 0, 2, 2, w/2, h/2)
 	elseif spawned_enemies >= enemy_num and dragon.HP == 0 then
-		w, h = images["you_win.png"]:getDimensions()
-		love.graphics.draw(images["you_win.png"], g_height / 2, g_width / 2, 0, 4, 4, w/2, h/2)
+		w, h = images["you_win2.png"]:getDimensions()
+		love.graphics.draw(images["you_win2.png"], g_height / 2, g_width / 2, 0, 2, 2, w/2, h/2)
 	end
 	--[[
 	love.graphics.print("Spells:".. #player_spells, 0, 0)
