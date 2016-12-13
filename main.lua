@@ -74,25 +74,8 @@ function love.keypressed(key, scancode, isrepeat)
 	if scancode == "q" then
 		love.event.quit()
 	end
---[[
-	if scancode == "return" then
-		print ("HP", player.HP)
-		print ("HP", spawned_enemies)
-		print ("HP", enemy_num)
-	end
---]]
 	if scancode == "return" and (player.HP == 0 or (spawned_enemies >= enemy_num and dragon.HP <= 0))  then
 		love.event.quit("restart")
-		--[[
-		spawned_enemies = 0
-		game_over_timer = 0
-		table.clear(renderables)
-		table.clear(updateables)
-		table.clear(enemies)
-		table.clear(player_spells)
-		player.HP = 4
-		loadStart()
-		]]
 	end
 end
 
@@ -106,7 +89,7 @@ function love.update(dt)
 		shake_timer = shake_timer + dt
 	end
 	if music:isStopped() then
-		curr_music = ({"music2.wav", "music2.wav", "music2.wav", "music.wav"})[math.random(3)]
+		curr_music = ({"music2.wav", "music2.wav", "music2.wav", "music.wav"})[math.random(4)]
 		music = sounds[curr_music]
 	end
 	music:play()
