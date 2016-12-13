@@ -74,25 +74,8 @@ function love.keypressed(key, scancode, isrepeat)
 	if scancode == "q" then
 		love.event.quit()
 	end
---[[
-	if scancode == "return" then
-		print ("HP", player.HP)
-		print ("HP", spawned_enemies)
-		print ("HP", enemy_num)
-	end
---]]
 	if scancode == "return" and (player.HP == 0 or (spawned_enemies >= enemy_num and dragon.HP <= 0))  then
 		love.event.quit("restart")
-		--[[
-		spawned_enemies = 0
-		game_over_timer = 0
-		table.clear(renderables)
-		table.clear(updateables)
-		table.clear(enemies)
-		table.clear(player_spells)
-		player.HP = 4
-		loadStart()
-		]]
 	end
 end
 
