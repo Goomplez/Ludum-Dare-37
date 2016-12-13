@@ -106,7 +106,7 @@ function love.update(dt)
 		shake_timer = shake_timer + dt
 	end
 	if music:isStopped() then
-		curr_music = ({"music2.wav", "music2.wav", "music2.wav", "music.wav"})[math.random(3)]
+		curr_music = ({"music2.wav", "music2.wav", "music2.wav", "music.wav"})[math.random(4)]
 		music = sounds[curr_music]
 	end
 	music:play()
