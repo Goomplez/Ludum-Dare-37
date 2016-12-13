@@ -15,6 +15,7 @@ local updateables = {}
 local enemies = {}
 local player_spells = {}
 local enemy_spells = {}
+local dragon = {}
 local fs = love.filesystem
 local spawned_enemies = 0
 local paused = false
@@ -23,18 +24,37 @@ local end_game_timer = 0
 local shake_timer = .26
 local shake_time = .125
 local shake_mag = 2
-local enemy_num = 100
+local enemy_num = 0
 local hp_boost = 10
 local hp_times = 0
 local has_boss = false
+local dragon_updates = 0
+local fireball_timer = 0
+local fireball_time = 5
+
 curr_music = ({"music2.wav", "music.wav"})[math.random(2)]
 local music = sounds[curr_music]
+is_menu = true
+local rand2 = math.prandom
+
+
+local function get_dragon_ball()
+	return spawn_fireball(rand2(32 - dragon.x , dragon.x + 32), rand2(0, 10), "down")
+end
+
+function get_boss_attack(dt)
+	fireball_timer = fireball_timer + dt
+	if fireball_timer > fireball_time then
+		addEnemy(get_dragon_ball())
+		addEnemy(get_dragon_ball())
+		fireball_timer = 0
+	end
+end
 
 local function spawn() 
-	local rand2 = math.prandom
 	if --[[math.random(5) == 5]] true then
 		for i=1, math.clamp(1, math.log10(#enemies), 10), 1 do
-			addEnemy(spawn_fireball(rand2(32, 32 * 11 * 2), rand2(0, -10), "down"))
+			addEnemy(get_dragon_ball())
 		end
 	end
 	local spawns = {
@@ -45,6 +65,9 @@ local lava = 0
 local lavaPictureName = "lava.png"
 
 function love.keypressed(key, scancode, isrepeat)
+	if is_menu then 
+		menu_key_pressed(key, scancode, isrepeat)
+	end
 	if scancode == "p" then
 		paused = not paused
 	end
@@ -71,24 +94,31 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.update(dt)
+	if is_menu then
+		update_menu(dt)
+		return
+	end
+
 	if shake_timer < shake_time then
 		shake_timer = shake_timer + dt
 	end
 	if music:isStopped() then
-		curr_music = ({"music2.wav", "music.wav"})[math.random(2)]
+		curr_music = ({"music2.wav", "music2.wav", "music2.wav", "music.wav"})[math.random(3)]
 		music = sounds[curr_music]
 	end
 	music:play()
 	if paused then
 		return
 	end
-	if player.HP == 0 or spawned_enemies >= enemy_num then
+	if player.HP == 0 or spawned_enemies >= enemy_num and dragon.HP == 0 then
 		end_game_timer = end_game_timer + dt
 		return
 	end
 
-
 	flux.update(dt)
+	if is_boss then
+		get_boss_attack(dt)
+	end
 	local spawn_new = false
 	for i, enemy in ipairs(enemies) do
 		for i, shot in ipairs(player_spells) do
@@ -130,6 +160,11 @@ function love.update(dt)
 	nilTable(player_spells, "rm_player_spell")
 	if spawn_new then 
 		spawned_enemies = spawned_enemies + 1
+		if spawned_enemies >= (enemy_num) and dragon_updates < 5 then
+			is_boss = true
+			addEnemy(dragon)
+			dragon_updates = dragon_updates + 1
+		end
 		if spawned_enemies >= hp_boost then
 			hp_boost = 10 + 1.125 * hp_boost
 			player:harm(-1)
@@ -188,28 +223,38 @@ function loadStart()
 	local brainzzzz = spawn_zombie(z_x, z_y, "left")
 	load_hp_bar()
 	addEnemy(brainzzzz)
+	dragon = spawn_dragon()
+	-- addEnemy(dragon)
+
 	addRenderable(count_down)
 end
 
 function love.load() 
 	love.graphics.setDefaultFilter('linear', 'nearest')
-	love.window.setMode(768, 550)
+	love.window.setMode(768, 513)
 	require("tablebackground")
 	require("enemies")
 	require("zombie")
 	require("skeleton")
+	require("dragon")
 	images = require("images")
 	sounds = require("sounds")
 	player = require("player")
 	count_down = require("countdown")
 	require("player_health")
+	require("starting_menu")
 	loadStart()
 	sounds["explosion.wav"]:setVolume(1.5)
 	sounds["music.wav"]:setVolume(.25)
 	sounds["music2.wav"]:setVolume(.15)
+	sounds["music3.wav"]:setVolume(.15)
 end
 
 function love.draw() 
+	if is_menu then
+		render_menu()
+		return 
+	end
 	if shake_timer < shake_time then
 		love.graphics.push()
 		love.graphics.translate(math.prandom(-shake_mag, shake_mag), math.prandom(-shake_mag, shake_mag))
@@ -238,7 +283,7 @@ function love.draw()
 	if player.HP == 0 then
 		w, h = images["game_over.png"]:getDimensions()
 		love.graphics.draw(images["game_over.png"], g_height / 2, g_width / 2, 0, 4, 4, w/2, h/2)
-	elseif spawned_enemies >= enemy_num then
+	elseif spawned_enemies >= enemy_num and dragon.HP == 0 then
 		w, h = images["you_win.png"]:getDimensions()
 		love.graphics.draw(images["you_win.png"], g_height / 2, g_width / 2, 0, 4, 4, w/2, h/2)
 	end

@@ -17,6 +17,7 @@ local function harm_z(self)
 		end
 	end
 end
+
 -- Update fuction for zombie
 local function update_z(self, dt)
 	local angle = math.angle(self.x, self.y, player.x, player.y)

@@ -86,6 +86,9 @@ local lavaTable = {
 	rm_update = false,
 }
 
+function getLavaTable()
+	return lavaTable
+end
 
 function load_lava_table()
 	addRenderable(lavaTable)

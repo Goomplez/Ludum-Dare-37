@@ -19,7 +19,7 @@ local bounds = getTableBounds()
 local HP_bar = {
 	-- Start of things this table needs to be rendered
 	x = 0,  
-	y = bounds.y.max + 32 * 3,
+	y = bounds.y.max + 32 * 2,
 	scale = {
 		x = 2.0,
 		y = 2.0
