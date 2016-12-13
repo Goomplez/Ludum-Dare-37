@@ -19,7 +19,7 @@ function spawn_dragon()
 			y = 64 / 2,
 		},
 		xStart = 50,
-		xEnd = 700,
+		xEnd = 900,
 		xspeed = 140,
 
 		-- Bounding
