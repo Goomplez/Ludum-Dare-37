@@ -1,11 +1,12 @@
 ---[[
-local images = require("images")
+--local images = require("images")
 local sounds = require("sounds")
+local font = require("fonts")
 require("utils")
 
 local numbers = { }
 for i=0, 9 do
-	numbers[tostring(i)] = images[i .. ".png"]
+	numbers[tostring(i)] = font[i .. ".png"]
 end
 
 

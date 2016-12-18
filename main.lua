@@ -1,13 +1,16 @@
 -- require("lovedebug")
 require("utils")
 require("spells")
+local blitty = require("blitty")
 flux = require("flux")
 images = {} -- require("images")
 player = {} -- require("player")
 sounds = require("sounds")
+
 local count_down = {} -- require("count_down")
 
-g_width, g_height  = 0, 0
+g_height = 0
+g_width = 0
 
 -- Things that can be rendered with an x, y, and blittable image
 local renderables = {}
@@ -218,7 +221,6 @@ function loadStart()
 end
 
 function love.load() 
-	love.graphics.setDefaultFilter('linear', 'nearest')
 	love.window.setMode(768, 513)
 	require("tablebackground")
 	require("enemies")

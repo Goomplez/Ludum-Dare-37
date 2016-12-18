@@ -6,7 +6,7 @@ local font = {}
 local files = fs.getDirectoryItems("assets/font")
 for i, file in ipairs(files) do
 	if fs.isFile("assets/font/" .. file) and string.ends(file, ".png") then
-		images[file] = love.graphics.newImage("assets/font/" .. file)
+		font[file] = love.graphics.newImage("assets/font/" .. file)
 	end
 end
 
