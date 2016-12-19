@@ -45,7 +45,7 @@ local function player_update(self, dt)
 			if key.isDown(keys[i]) and self.can_shoot then
 				--off = self.spell_offset
 				local spell = spawn_spell(
-					self.x,-- + off.x, 
+					self.x,-- + off.x,
 					self.y, -- + off.y,
 					 keys[i])
 				addRenderable(spell)
@@ -71,10 +71,10 @@ local function player_update(self, dt)
 	end
 
 	if (self.x ) > xbounds.max then
-		self.x = xbounds.max 
+		self.x = xbounds.max
 	end
 	if (self.y ) > ybounds.max then
-		self.y = ybounds.max  
+		self.y = ybounds.max
 	end
 end
 
@@ -118,7 +118,7 @@ return {
 	spell_offset = { x = 20, y = 20 },
 	can_shoot = false,
 	scaled = function (self, name)
-		return self[name] * self.scale 
+		return self[name] * self.scale
 	end,
 	-- HP, to be used by player_health
 	HP = 4,
@@ -127,15 +127,16 @@ return {
 	is_vulnerable = function (self)
 		return self.hit_timer > self.hit_delay
 	end,
+	heal = function(self, damage)
+		self.HP = self.HP + damage
+		self.HP = math.clamp(0, self.HP, 4)
+		sounds["pickup.wav"]:play()
+	end,
 	harm = function (self, damage)
 		self.HP = self.HP - damage
 		self.HP = math.clamp(0, self.HP, 4)
 		self.hit_timer = 0
-		if damage >= 0 then
-			sounds["hurt2.wav"]:play()
-		else
-			sounds["pickup.wav"]:play()
-		end
+		sounds["hurt2.wav"]:play()
 	end
 }
 end

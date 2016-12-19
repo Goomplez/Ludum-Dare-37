@@ -2,6 +2,7 @@
 require("utils")
 require("spells")
 local blitty = require("blitty")
+local font = require("fonts")
 flux = require("flux")
 images = {} -- require("images")
 player = {} -- require("player")
@@ -60,7 +61,7 @@ function get_boss_attack(dt)
 	end
 end
 
-local function spawn() 
+local function spawn()
 	if --[[math.random(5) == 5]] true then
 		for i=1, math.clamp(1, math.log10(#enemies), 10), 1 do
 			addEnemy(get_dragon_ball())
@@ -74,7 +75,7 @@ local lava = 0
 local lavaPictureName = "lava.png"
 
 function love.keypressed(key, scancode, isrepeat)
-	if is_menu then 
+	if is_menu then
 		menu_key_pressed(key, scancode, isrepeat)
 	end
 	if scancode == "p" then
@@ -130,6 +131,7 @@ function love.update(dt)
 		for i, enemy in ipairs(enemies) do
 			if not enemy.rm_enemy and math.dist(enemy.x, enemy.y, player.x, player.y) < enemy.r then
 				player:harm(1)
+				break
 			end
 		end
 	end
@@ -137,7 +139,7 @@ function love.update(dt)
 		v:update(dt)
 	end
 
-	function nilTable(array, key) 
+	function nilTable(array, key)
 		for i=#array, 1, -1 do
 			if array[i][key] then
 				table.remove(array, i)
@@ -149,7 +151,7 @@ function love.update(dt)
 	nilTable(renderables, "rm_render")
 	nilTable(enemies, "rm_enemy")
 	nilTable(player_spells, "rm_player_spell")
-	if spawn_new then 
+	if spawn_new then
 		spawned_enemies = spawned_enemies + 1
 		if spawned_enemies >= (enemy_num) and dragon_updates < 5 then
 			is_boss = true
@@ -184,18 +186,19 @@ function love.update(dt)
 	end
 end
 
-function loadStart() 
+function loadStart()
 	load_lava_table()
 	count_down:setCountDown(enemy_num)
 	player.bounds = getTableBounds()
 	player.image = images["WizardLightning.png"]
 	g_height, g_width = love.graphics.getDimensions()
 	player.x = g_width / 2
-	player.y = g_height / 2 
+	player.y = g_height / 2
 	player.w, player.h = player.image:getDimensions()
 	hp_boost = 10
 	addRenderable(player)
 	addUpdateable(player)
+	addUpdateable(font)
 
 	local bounds = getTableBounds()
 
@@ -220,13 +223,14 @@ function loadStart()
 	addRenderable(count_down)
 end
 
-function love.load() 
+function love.load()
 	love.window.setMode(768, 513)
 	require("tablebackground")
 	require("enemies")
 	require("zombie")
 	require("skeleton")
 	require("dragon")
+	font = require("fonts")
 	images = require("images")
 	sounds = require("sounds")
 	player = require("player")
@@ -240,10 +244,10 @@ function love.load()
 	sounds["music3.wav"]:setVolume(.15)
 end
 
-function love.draw() 
+function love.draw()
 	if is_menu then
 		render_menu()
-		return 
+		return
 	end
 	if shake_timer < shake_time then
 		love.graphics.push()
@@ -284,7 +288,6 @@ function love.draw()
 	love.graphics.print("Enemies:" .. #enemies, 0, 30)
 	love.graphics.print("Enemies Spawned:".. spawned_enemies, 50, 0)
 	--]]
-
 	if shake_timer < shake_time then
 		love.graphics.pop()
 	end
@@ -305,7 +308,7 @@ function type_check(item, fields)
 	return true, nil
 end
 
-function addUpdateable(item) 
+function addUpdateable(item)
 	valid, msg = type_check(item, update_reqs)
 	if valid then
 		table.insert(updateables, item)
@@ -330,7 +333,7 @@ local player_spell_reqs = {
 	r = "number",
 }
 
-function addPlayerSpell(item) 
+function addPlayerSpell(item)
 	valid, msg = type_check(item, player_spell_reqs)
 	if valid then
 		table.insert(player_spells, item)
@@ -351,8 +354,6 @@ function addEnemy(item)
 		print(msg)
 		error("Tried to add non-updatable to updateables")
 	end
-
-	-- body
 end
 
 local render_func_reqs = {
@@ -369,12 +370,12 @@ local render_reqs = {
 	scale = "table",
 }
 
-function addRenderable(item) 
+function addRenderable(item)
 	valid, msg = type_check(item, render_func_reqs)
 	valid2, msg2 = type_check(item, render_reqs)
 	if valid or valid2 then
 		table.insert(renderables, item)
-	else 
+	else
 		print (msg)
 		print (msg2)
 		error("Tried to add non-renderable to renerables")

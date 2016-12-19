@@ -27,7 +27,7 @@ local function next_path(self)
 	self.tween:oncomplete(function()
 		if self.traveling_on then
 			self:switch_xy()
-		else 
+		else
 			self:next_path()
 		end
 	end)
@@ -41,8 +41,10 @@ local function switch_xy(self)
 		self.traveling_on = "x"
 	end
 	local dimension = self.traveling_on
+	-- Only ever set the x or y value
 	local dest = {}
 	dest[dimension] = dest_pair[dimension]
+	-- Handle the direction the skeleton is facing
 	if dest.x then
 		self.scale.x = math.copysign(self.scale.x, self.x - dest.x)
 	end
@@ -58,11 +60,11 @@ local function harm_skeleton(self, amount)
 	if self.hurt_timer >= self.hurt_time then
 		sounds["hurt1.wav"]:stop()
 		sounds["hurt1.wav"]:play()
-	
+
 		self.HP = self.HP - 1
 		self.hurt_timer = 0
 		if self.HP == 0 then
-			self.hurt_timer = self.hurt_time + 0.001	
+			self.hurt_timer = self.hurt_time + 0.001
 			self.rm_render = true
 			self.rm_update = true
 			self.rm_enemy = true
@@ -96,7 +98,7 @@ function spawn_skeleton(x, y, dir)
 		},
 		offset = {
 			x = 7,
-			y = 10, 
+			y = 10,
 		},
 		r = 10,
 		rotation = dirToAngle(dir),

@@ -1,6 +1,5 @@
 local images = require("images")
 local sounds = require("sounds")
-local flux   = require("flux")
 require("utils")
 
 function spawn_dragon()

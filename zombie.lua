@@ -11,11 +11,12 @@ local function harm_z(self)
 		self.HP = self.HP - 1
 		self.hurt_timer = 0
 		if self.HP == 0 then
-			self.hurt_timer = self.hurt_time + 0.001	
+			self.hurt_timer = self.hurt_time + 0.001
 			self.rm_render = true
 			self.rm_update = true
 			self.rm_enemy = true
-			potion.spawn_potion(self.x, self.y)
+			local potion = spawn_potion(self.x, self.y)
+			addEnemy(potion)
 		end
 	end
 end
@@ -27,7 +28,7 @@ local function update_z(self, dt)
 	self.x, self.y = offsetByVector({x = self.x, y = self.y}, angle, self.speed * dt)
 	if (oldX - self.x) > 0 then
 		self.scale.x = math.copysign(self.scale.x, 1)
-	else 
+	else
 		self.scale.x = math.copysign(self.scale.x, -1)
 	end
 
@@ -54,7 +55,7 @@ function spawn_zombie(x, y, dir)
 		},
 		offset = {
 			x = 10,
-			y = 10, 
+			y = 10,
 		},
 		rotation = dirToAngle(dir),
 		-- Enemy

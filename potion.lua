@@ -5,14 +5,12 @@ local player = require("player")
 
 -- Pickup function for potion
 local function pickup(self)
-	if self.HP == 0 then
-		sounds["pickup.wav"]:stop()
-		sounds["pickup.wav"]:play()
-		player:harm(-1)
+	-- if self.HP == 0 then
+		player:heal(2)
 		self.rm_render = true
 		self.rm_update = true
 		self.rm_enemy = true
-	end
+	-- end
 end
 
 -- Update fuction for potion
@@ -22,7 +20,7 @@ local function update_p(self, dt)
 	self.x, self.y = offsetByVector({x = self.x, y = self.y}, angle, self.speed * dt)
 	if (oldX - self.x) > 0 then
 		self.scale.x = math.copysign(self.scale.x, 1)
-	else 
+	else
 		self.scale.x = math.copysign(self.scale.x, -1)
 	end
 
@@ -51,9 +49,9 @@ function spawn_potion(x, y)
 		},
 		offset = {
 			x = 10,
-			y = 10, 
+			y = 10,
 		},
-		rotation = dirToAngle(dir),
+		rotation = 0,
 		-- Enemy
 		r = 20,
 		speed = 128,
