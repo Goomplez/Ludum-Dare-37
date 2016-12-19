@@ -41,8 +41,8 @@ function spawn_dragon()
 		r = 40,
 		-- HP, to be used by player_health
 		HP = 50,
-		hit_timer = 2.1,
-		hit_delay = 2,
+		hit_timer = .51,
+		hit_delay = .5,
 	}
 
 	function dragon.is_vulnerable(self)
@@ -51,7 +51,7 @@ function spawn_dragon()
 
   -- Keep the dragon from
 	function dragon.harm (self, damage)
-		if self:is_vulnerable() then
+		if not self:is_vulnerable() then
 			return
 		end
 		self.HP = self.HP - 1
@@ -89,7 +89,7 @@ function spawn_dragon()
 		else
 			self.scale.x = math.copysign(self.scale.x, 1)
 		end
-		if self.hit_timer < self.hit_delay then
+		if not self:is_vulnerable() then
 			self.hit_timer = self.hit_timer + dt
 		end
 		if self.HP == 0 then

@@ -15,7 +15,7 @@ local function harm_z(self)
 			self.rm_render = true
 			self.rm_update = true
 			self.rm_enemy = true
-			if love.math.random(5) == 1 then
+			if love.math.random(3) > 1 then
 				local potion = spawn_potion(self.x, self.y)
 				addOtherSpell(potion)
 			end
@@ -66,7 +66,7 @@ function spawn_zombie(x, y, dir)
 		-- Update
 		update = update_z,
 		-- Zombie
-		HP = 5,
+		HP = 7,
 		hurt_time = .1,
 		hurt_timer = .11,
 		harm = harm_z,

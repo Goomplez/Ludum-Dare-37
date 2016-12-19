@@ -46,7 +46,7 @@ function spawn_potion(x, y)
 		},
 		rotation = 0,
 		-- Hit radius
-		r = 40,
+		r = 30,
 		-- Update
 		update = update_p,
 

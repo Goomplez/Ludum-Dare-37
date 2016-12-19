@@ -26,7 +26,7 @@ local updateables = {}
 local enemies = {}
 local player_spells = {}
 local other_spells = {}
-local dragon = {}
+dragon = {}
 local fs = love.filesystem
 local spawned_enemies = 0
 local paused = false
@@ -79,7 +79,15 @@ local function spawn()
 		end
 	end
 	local spawns = {
-		spawn_skeleton, spawn_goblin, spawn_zombie}
+		spawn_goblin,
+		spawn_goblin,
+		spawn_goblin,
+		spawn_goblin,
+		spawn_goblin,
+	 	spawn_skeleton,
+		spawn_skeleton,
+		spawn_skeleton,
+		spawn_zombie}
 	return spawns[math.random(#spawns)]
 end
 local lava = 0
@@ -95,7 +103,7 @@ function love.keypressed(key, scancode, isrepeat)
 	if scancode == "q" then
 		love.event.quit()
 	end
-	if scancode == "return" and (player.HP == 0 or (spawned_enemies >= enemy_num and dragon.HP <= 0))  then
+	if scancode == "return" and (player.HP == 0 or (count_down:isBoss() and dragon.HP <= 0))  then
 		love.event.quit("restart")
 	end
 end
@@ -120,7 +128,7 @@ function love.update(dt)
 	if paused then
 		return
 	end
-	if player.HP == 0 or spawned_enemies >= enemy_num and dragon.HP == 0 then
+	if player.HP == 0 or count_down:isBoss() and dragon.HP == 0 then
 		end_game_timer = end_game_timer + dt
 		return
 	end
@@ -173,26 +181,25 @@ function love.update(dt)
 	nilTable(player_spells, "rm_player_spell")
 	nilTable(other_spells, "rm_other_spell")
 	if spawn_new then
-		spawned_enemies = spawned_enemies + 1
-		if spawned_enemies >= (enemy_num) and dragon_updates < 5 then
-			is_boss = true
+		count_down:tick()
+		if count_down:isBoss() and dragon_updates < 5 then
 			addEnemy(dragon)
 			dragon_updates = dragon_updates + 1
 		end
-		count_down:tick()
 		spawn_new = false
 		local boop = flux.to({x = 0}, 1.5, { x = 1})
 		boop:oncomplete(function()
-			if has_boss then return end
+			if count_down:isBoss() then return end
 			local bounds = getTableBounds()
 			local xbounds = bounds.x
 			local ybounds = bounds.y
 			local enemy = spawn()(math.prandom(xbounds.min, xbounds.max), math.prandom(ybounds.min, ybounds.max), "left")
 			addEnemy(enemy)
 		end)
-		if spawned_enemies % 10 == 0 then
+		-- Spawn an extra enemie every 10 enemies
+		if count_down.total % 10 == 0 then
 			boop:oncomplete(function()
-				if has_boss then return end
+				if count_down:isBoss() then return end
 				local bounds = getTableBounds()
 				local xbounds = bounds.x
 				local ybounds = bounds.y
@@ -217,9 +224,9 @@ function loadStart()
 	addUpdateable(font)
 	addRenderable(curse)
 	addUpdateable(curse)
+	count_down.total = 0
 
 	local bounds = getTableBounds()
-
 	local skel_x = math.prandom(bounds.x.min, bounds.x.max)
 	local skel_y = math.prandom(bounds.y.min, bounds.y.max)
 	local skelly = spawn_skeleton(skel_x, skel_y, "left")
@@ -276,7 +283,7 @@ function love.draw()
 	if player.HP == 0 then
 		w, h = images["game_over2.png"]:getDimensions()
 		love.graphics.draw(images["game_over2.png"], g_height / 2, g_width / 2, 0, 2, 2, w/2, h/2)
-	elseif spawned_enemies >= enemy_num and dragon.HP == 0 then
+	elseif count_down:isBoss() and dragon.HP == 0 then
 		w, h = images["you_win2.png"]:getDimensions()
 		love.graphics.draw(images["you_win2.png"], g_height / 2, g_width / 2, 0, 2, 2, w/2, h/2)
 	end

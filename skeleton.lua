@@ -11,9 +11,10 @@ local function next_path(self)
 	end
 	local dest_pair = self.path:current()
 	local dest = {}
+	local dimension = ""
 	if self.traveling_on then
 		self.traveling_on = ({"x", "y"})[math.random(2)]
-		local dimension = self.traveling_on
+		dimension = self.traveling_on
 		dest[dimension] = dest_pair[dimension]
 	else
 		dest.x = dest_pair.x
@@ -23,7 +24,9 @@ local function next_path(self)
 		self.scale.x = math.copysign(self.scale.x, self.x - dest.x)
 	end
 
-	self.tween = flux.to(self, dest_pair.time, dest)
+	self.tween = flux.to(self,
+		math.abs(dest_pair[dimension] - self[dimension]) / (100 * love.math.random(3)) 
+		, dest)
 	self.tween:ease("linear")
 	self.tween:oncomplete(function()
 		if self.traveling_on then
@@ -49,7 +52,7 @@ local function switch_xy(self)
 	if dest.x then
 		self.scale.x = math.copysign(self.scale.x, self.x - dest.x)
 	end
-	self.tween = flux.to(self, dest_pair.time, dest)
+	self.tween = flux.to(self, math.abs(dest_pair[dimension] - self[dimension]) / 200 , dest)
 	self.tween:ease("linear")
 	self.tween:oncomplete(function()
 		self:next_path()

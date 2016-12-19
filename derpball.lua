@@ -7,6 +7,7 @@ require ("utils")
 
 local function update(self, dt)
 	local angle = math.angle(self.x, self.y, player.x, player.y)
+	angle = angle - (math.pi * 3 / 16) + ( love.math.random(5) * math.pi / 16)
 	self.x, self.y = offsetByVector({x = self.x, y = self.y}, angle, self.velocity * dt)
   self.rotation = angle
 

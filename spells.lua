@@ -25,7 +25,7 @@ function spawn_fireball(x, y, direction)
 		y = y,
 		r = 5,
 		image = images["fireball.png"],
-		rotation = dirToAngle(direction),
+		rotation = dirToAngle(direction) - (math.pi * 3 / 32) + ( math.random(5) * math.pi / 32),
 		scale = { x = 2.0, y = 2.0, },
 		offset = {
 			x = 5,
@@ -37,10 +37,12 @@ function spawn_fireball(x, y, direction)
 		update = update,
 		-- Can't kill a fireball
 		collide = function (self)
-			player:harm(1)
-			self.rm_enemy = true
+			if not self.other_spell then
+				player:harm(1)
+			end
 			self.rm_update = true
 			self.rm_render = true
+			self.rm_other_spell = true
 		end,
 
 		-- Removal flags
@@ -58,7 +60,7 @@ function spawn_spell(x, y, direction)
 		y = y,
 		r = 5,
 		image = images["iceball.png"],
-		rotation = dirToAngle(direction),
+		rotation = dirToAngle(direction) - (math.pi * 3 / 64) + ( math.random(5) * math.pi / 64),
 		scale = { x =2.0, y = 2.0, },
 		offset = {
 			x = 5,
