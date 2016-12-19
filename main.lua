@@ -188,7 +188,7 @@ end
 
 function loadStart()
 	load_lava_table()
-	count_down:setCountDown(enemy_num)
+	-- count_down:setCountDown(enemy_num)
 	player.bounds = getTableBounds()
 	player.image = images["WizardLightning.png"]
 	g_height, g_width = love.graphics.getDimensions()
