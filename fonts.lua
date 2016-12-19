@@ -35,7 +35,7 @@ local function font_print(x, y, text, rotation, scalex, scaley, shearx, sheary)
 			love.graphics.draw(
 				font[c],
 				(chars*w) + w/(scalex * 2),
-				(lines * h + lines) + h/(scaley * 2) ,
+				(lines * h + lines) + (h/(scaley * 2)),
 				rotation,
 				scalex, scaley, w/(scalex * 2), h /(scaley * 2), shearx, sheary)
 		elseif c == " " then

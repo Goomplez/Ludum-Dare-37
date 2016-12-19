@@ -37,11 +37,13 @@ function render_menu()
 		-- love.graphics.draw(images["backdrop.png"], 220, 160, 0, 2, 2)
 		font.print(230, 170, credits)
 	else
-		font.printLarge(titlex + 20, titley + 10, "FATEFUL CAVERN")
+		font.printLarge(titlex + 80, titley + 32, "FATEFUL CAVERN")
+		local menu_anchorx = 290
+		local menu_anchory = 200
 		local menu_items = {
-			{300, 220, "NEW GAME"},
-			{300, 270, "CONTROLS"},
-			{300, 320, "CREDITS"}
+			{menu_anchorx, menu_anchory, "NEW GAME"},
+			{menu_anchorx, menu_anchory + 50, "CONTROLS"},
+			{menu_anchorx, menu_anchory + 100, "CREDITS"}
 		}
 		for i=1, #menu_items do
 			if selected == i then
@@ -52,7 +54,7 @@ function render_menu()
 		end
 		--font.print(300, 220, "NEW GAME")
 		-- font.print(300, 320, "CONTROLS")
-		love.graphics.draw(images[control], 280, 220 + ((selected - 1) *50), 0, 2.0, 2.0)
+		love.graphics.draw(images[control], menu_anchorx - 20, menu_anchory + ((selected - 1) *50), 0, 2.0, 2.0)
 	end
 end
 
