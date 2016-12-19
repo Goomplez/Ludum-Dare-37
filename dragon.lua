@@ -49,7 +49,11 @@ function spawn_dragon()
 		return self.hit_timer > self.hit_delay
 	end
 
+  -- Keep the dragon from
 	function dragon.harm (self, damage)
+		if self:is_vulnerable() then
+			return
+		end
 		self.HP = self.HP - 1
 		self.HP = math.clamp(0, self.HP, 50)
 		self.hit_timer = 0

@@ -9,39 +9,32 @@ local function pickup(self)
 		player:heal(2)
 		self.rm_render = true
 		self.rm_update = true
-		self.rm_enemy = true
+		self.rm_other_spell = true
 	-- end
 end
 
 -- Update fuction for potion
 local function update_p(self, dt)
-	--[[ local angle = math.angle(self.x, self.y, player.x, player.y)
-	local oldX = self.x
-	self.x, self.y = offsetByVector({x = self.x, y = self.y}, angle, self.speed * dt)
-	if (oldX - self.x) > 0 then
-		self.scale.x = math.copysign(self.scale.x, 1)
-	else
-		self.scale.x = math.copysign(self.scale.x, -1)
+	self.bob_timer = self.bob_timer + math.copysign(dt, self.bob_dir)
+	if math.abs(self.bob_timer) > self.bob_time then
+		self.bob_dir = -1 * self.bob_dir
 	end
-
-	if self.hurt_timer < self.hurt_time then
-		self.hurt_timer = self.hurt_timer + dt
-		if self.hurt_timer >= self.hurt_time then
-			self.rm_render = false
-			addRenderable(self)
-		else
-			self.rm_render = true
-		end
-	end
-	--]]
+	self.y = self.yBase + self.bob_timer * 3
 end
 
 -- Spawn potion function
 function spawn_potion(x, y)
-	local ppotion = {
+	local potion = {
 		-- Renderable
 		x = x,
 		y = y,
+		xBase = x,
+		yBase = y,
+
+		bob_time = .5,
+		bob_timer = 0,
+		bob_dir = 1,
+
 		image = images["red-potion.png"],
 		scale = {
 			x = 2.0,
@@ -52,21 +45,20 @@ function spawn_potion(x, y)
 			y = 10,
 		},
 		rotation = 0,
-		-- Enemy
+		-- Hit radius
 		r = 20,
-		speed = 128,
 		-- Update
 		update = update_p,
+
 		-- Potion
-		HP = 5,
-		hurt_time = .1,
-		hurt_timer = .11,
-		harm = pickup,
+		blink_time = .1,
+		blink_timer = .11,
+		collide = pickup,
 
 		-- Collection flags
 		rm_render = false,
 		rm_update = false,
-		rm_enemy = false,
+		rm_other_spell = false,
 	}
-	return ppotion
+	return potion
 end

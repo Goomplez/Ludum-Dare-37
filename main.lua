@@ -26,7 +26,7 @@ local renderables = {}
 local updateables = {}
 local enemies = {}
 local player_spells = {}
-local enemy_spells = {}
+local other_spells = {}
 local dragon = {}
 local fs = love.filesystem
 local spawned_enemies = 0
@@ -37,8 +37,6 @@ local shake_timer = .26
 local shake_time = .125
 local shake_mag = 2
 local enemy_num = 100
-local hp_boost = 10
-local hp_times = 0
 local has_boss = false
 local dragon_updates = 0
 local fireball_timer = 0
@@ -72,8 +70,8 @@ end
 function get_boss_attack(dt)
 	fireball_timer = fireball_timer + dt
 	if fireball_timer > fireball_time then
-		addEnemy(get_dragon_ball())
-		addEnemy(get_dragon_ball())
+		addOtherSpell(get_dragon_ball())
+		addOtherSpell(get_dragon_ball())
 		fireball_timer = 0
 	end
 end
@@ -81,7 +79,7 @@ end
 local function spawn()
 	if --[[math.random(5) == 5]] true then
 		for i=1, math.clamp(1, math.log10(#enemies), 10), 1 do
-			addEnemy(get_dragon_ball())
+			addOtherSpell(get_dragon_ball())
 		end
 	end
 	local spawns = {
@@ -157,6 +155,12 @@ function love.update(dt)
 			end
 		end
 	end
+	for i=1, #other_spells do
+		local _spell = other_spells[i]
+		if (not _spell.rm_other_spell) and math.dist(_spell.x, _spell.y, player.x, player.y) < _spell.r  then
+			_spell:collide()
+		end
+	end
 	for i, v in ipairs(updateables) do
 		v:update(dt)
 	end
@@ -173,16 +177,13 @@ function love.update(dt)
 	nilTable(renderables, "rm_render")
 	nilTable(enemies, "rm_enemy")
 	nilTable(player_spells, "rm_player_spell")
+	nilTable(other_spells, "rm_other_spell")
 	if spawn_new then
 		spawned_enemies = spawned_enemies + 1
 		if spawned_enemies >= (enemy_num) and dragon_updates < 5 then
 			is_boss = true
 			addEnemy(dragon)
 			dragon_updates = dragon_updates + 1
-		end
-		if spawned_enemies >= hp_boost then
-			hp_boost = 10 + 1.125 * hp_boost
-			player:harm(-1)
 		end
 		count_down:tick()
 		spawn_new = false
@@ -217,10 +218,11 @@ function loadStart()
 	player.x = g_width / 2
 	player.y = g_height / 2
 	player.w, player.h = player.image:getDimensions()
-	hp_boost = 10
 	addRenderable(player)
 	addUpdateable(player)
 	addUpdateable(font)
+	addRenderable(curse)
+	addUpdateable(curse)
 
 	local bounds = getTableBounds()
 
@@ -336,6 +338,26 @@ local player_spell_reqs = {
 	r = "number",
 }
 
+local other_spell_reqs = {
+	rm_other_spell = "boolean",
+	x = "number",
+	y = "number",
+	r = "number",
+	collide = "function",
+}
+
+function addOtherSpell(item)
+	valid, msg = type_check(item, other_spell_reqs)
+	if valid then
+		table.insert(other_spells, item)
+		addRenderable(item)
+		addUpdateable(item)
+	else
+		print(msg)
+		error("Tried to add non-updatable to updateables")
+	end
+end
+
 function addPlayerSpell(item)
 	valid, msg = type_check(item, player_spell_reqs)
 	if valid then
@@ -344,7 +366,6 @@ function addPlayerSpell(item)
 		print(msg)
 		error("Tried to add non-updatable to updateables")
 	end
-
 end
 
 function addEnemy(item)

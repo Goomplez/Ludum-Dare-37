@@ -1,5 +1,6 @@
 local images = require("images")
 local sounds = require("sounds")
+local player = require("player")
 local function update(self, dt)
 	self.x, self.y = offsetByVector(self, self.rotation + (math.pi), dt * self.velocity)
 
@@ -31,7 +32,8 @@ function spawn_fireball(x, y, direction)
 		velocity = 150,
 		update = update,
 		-- Can't kill a fireball
-		harm = function (self)
+		collide = function (self)
+			player:harm(1)
 			self.rm_enemy = true
 			self.rm_update = true
 			self.rm_render = true
@@ -40,7 +42,7 @@ function spawn_fireball(x, y, direction)
 		-- Removal flags
 		rm_render = false,
 		rm_update = false,
-		rm_enemy = false,
+		rm_other_spell = false,
 	}
 end
 

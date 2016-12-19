@@ -12,9 +12,9 @@ local files = fs.getDirectoryItems("assets/font")
 for i, file in ipairs(files) do
 	if fs.isFile("assets/font/" .. file) and string.ends(file, ".png") then
 		local charName = file:gsub(".png", "")
-		print(charName)
+	--	print(charName)
 		font[charName] = love.graphics.newImage("assets/font/" .. charName .. ".png")
-		print(font[charName])
+		--print(font[charName])
 	end
 	-- Map "/" to it's image
 	font["/"] = font["slash"]

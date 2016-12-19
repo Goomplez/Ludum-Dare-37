@@ -5,7 +5,7 @@ local font = require("fonts")
 require("utils")
 
 local function render(self)
-	local str = tostring(self.total) .. "/" .. tostring(self.out_of)
+	local str = tostring(self.total) .. "/" .. tostring(self.out_of) .. " TIL BOSS"
 	font.printLineRightAligned(768, 1, str)
 end
 

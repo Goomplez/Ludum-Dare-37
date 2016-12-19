@@ -15,8 +15,10 @@ local function harm_z(self)
 			self.rm_render = true
 			self.rm_update = true
 			self.rm_enemy = true
-			local potion = spawn_potion(self.x, self.y)
-			addEnemy(potion)
+			if love.math.random(5) == 1 then
+				local potion = spawn_potion(self.x, self.y)
+				addOtherSpell(potion)
+			end
 		end
 	end
 end
