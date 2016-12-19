@@ -5,8 +5,8 @@ local blitty = require("blitty")
 local font = require("fonts")
 local curse = require("curse")
 flux = require("flux")
-images = {} -- require("images")
-player = {} -- require("player")
+images = require("images")
+player = require("player")
 sounds = require("sounds")
 
 local count_down = {} -- require("count_down")
@@ -113,7 +113,9 @@ function love.update(dt)
 	end
 
 	if curr_music == "music.wav" then
-		curse:update(dt)
+		curse.enabled = true
+	else
+		curse.enabled = false
 	end
 	flux.update(dt)
 	local spawn_new = false
@@ -292,9 +294,6 @@ function love.draw()
 	love.graphics.print("Enemies:" .. #enemies, 0, 30)
 	love.graphics.print("Enemies Spawned:".. spawned_enemies, 50, 0)
 	--]]
-	if curr_music == "music.wav" then
-		curse:render()
-	end
 	if shake_timer < shake_time then
 		love.graphics.pop()
 	end
