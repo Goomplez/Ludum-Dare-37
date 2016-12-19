@@ -1,5 +1,6 @@
 local images = require("images")
 local sounds = require("sounds")
+local curse = require("curse")
 local function player_update(self, dt)
 	key = love.keyboard
 	if key.isDown("w") then
@@ -40,7 +41,7 @@ local function player_update(self, dt)
 	end
 
 
-	if curr_music == "music2.wav" then
+	if not curse:enabled() then
 		keys = {"up", "down", "left", "right"}
 		for i=1, #keys do
 			if key.isDown(keys[i]) and self.can_shoot then

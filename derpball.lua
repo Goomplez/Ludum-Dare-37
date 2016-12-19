@@ -32,8 +32,8 @@ function spawn_derpball(x,y)
 		y = y,
 		r = 10,
 		image = images["derpball.png"],
-		rotation = dirToAngle(direction),
-		scale = { x =2.0, y = 2.0, },
+		rotation = 0,
+		scale = { x = -2.0, y = 2.0, },
 		offset = {
 			x = 5,
 			y = 4,
@@ -42,12 +42,11 @@ function spawn_derpball(x,y)
     life_timer = 0,
     life_time = 5,
 
-
 		-- Updateable
-		velocity = 300,
+		velocity = 150,
 		update = update,
     -- Other spell
-    collide = nil,
+    collide = collide,
 
 		-- Removal flags
 		rm_render = false,

@@ -17,7 +17,6 @@ local player = require("player")
 local sounds = require("sounds")
 local count_down = require("countdown")
 
-
 g_height = 0
 g_width = 0
 
@@ -51,11 +50,8 @@ function love.load()
 	sounds["music3.wav"]:setVolume(.15)
 end
 
-curr_music = ({"music2.wav", "music.wav"})[math.random(2)]
-local music = sounds[curr_music]
 is_menu = true
 local rand2 = math.prandom
-
 
 local function get_dragon_ball()
 	local bounds = getTableBounds()
@@ -113,11 +109,14 @@ function love.update(dt)
 	if shake_timer < shake_time then
 		shake_timer = shake_timer + dt
 	end
-	if music:isStopped() then
-		curr_music = ({"music2.wav", "music2.wav", "music2.wav", "music.wav"})[math.random(4)]
-		music = sounds[curr_music]
+	-- Play the curse music if it's on queue
+	if curse:enabled() then
+		sounds["music2.wav"]:stop()
+		sounds["music.wav"]:play()
+	else
+		sounds["music.wav"]:stop()
+		sounds["music2.wav"]:play()
 	end
-	music:play()
 	if paused then
 		return
 	end
@@ -126,11 +125,6 @@ function love.update(dt)
 		return
 	end
 
-	if curr_music == "music.wav" then
-		curse.enabled = true
-	else
-		curse.enabled = false
-	end
 	flux.update(dt)
 	local spawn_new = false
 	for i, enemy in ipairs(enemies) do

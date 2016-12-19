@@ -1,6 +1,7 @@
 local images = require("images")
 local sounds = require("sounds")
 local player = require("player")
+local derpball = require("derpball")
 local function update(self, dt)
 	self.x, self.y = offsetByVector(self, self.rotation + (math.pi), dt * self.velocity)
 
@@ -13,6 +14,9 @@ local function update(self, dt)
 end
 
 function spawn_fireball(x, y, direction)
+	if love.math.random(10) < 3 then
+		return spawn_derpball(x, y)
+	end
 	-- body
 	-- Renderable, updateable, colliable
 	return {
