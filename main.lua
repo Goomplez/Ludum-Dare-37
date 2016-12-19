@@ -214,7 +214,7 @@ function loadStart()
 	load_lava_table()
 	-- count_down:setCountDown(enemy_num)
 	player.bounds = getTableBounds()
-	player.image = images["WizardLightning.png"]
+	player.image = images["Wizard.png"]
 	g_height, g_width = love.graphics.getDimensions()
 	player.x = g_width / 2
 	player.y = g_height / 2
@@ -287,13 +287,6 @@ function love.draw()
 		w, h = images["you_win2.png"]:getDimensions()
 		love.graphics.draw(images["you_win2.png"], g_height / 2, g_width / 2, 0, 2, 2, w/2, h/2)
 	end
-	--[[
-	love.graphics.print("Spells:".. #player_spells, 0, 0)
-	love.graphics.print("Renderables:" .. #renderables, 0, 10)
-	love.graphics.print("Updateables:" .. #updateables, 0, 20)
-	love.graphics.print("Enemies:" .. #enemies, 0, 30)
-	love.graphics.print("Enemies Spawned:".. spawned_enemies, 50, 0)
-	--]]
 	if shake_timer < shake_time then
 		love.graphics.pop()
 	end

@@ -24,14 +24,14 @@ end
 local function font_print(x, y, text, rotation, scalex, scaley, shearx, sheary)
 	love.graphics.push()
 	love.graphics.translate(x, y)
-	local h = font['0']:getHeight() * scalex
-	local w = font['0']:getWidth() * scaley
 	local lines = 0
 	local chars = 0
 	for i=1, #text do
 		chars = chars + 1
 		local c = text:sub(i,i)
 		if font[c] then
+			local h = font[c]:getHeight() * scalex
+			local w = font[c]:getWidth() * scaley
 			-- Print the char
 			love.graphics.draw(
 				font[c],

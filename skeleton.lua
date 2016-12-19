@@ -25,7 +25,7 @@ local function next_path(self)
 	end
 
 	self.tween = flux.to(self,
-		math.abs(dest_pair[dimension] - self[dimension]) / (100 * love.math.random(3)) 
+		math.abs(dest_pair[dimension] - self[dimension]) / (100 * love.math.random(3))
 		, dest)
 	self.tween:ease("linear")
 	self.tween:oncomplete(function()
@@ -86,6 +86,13 @@ local function update_skeleton(self, dt)
 			self.rm_render = true
 		end
 	end
+	self.walk_timer = self.walk_timer + dt
+	if self.walk_timer > self.walk_time then
+		self.image = images['skeleton.png']
+		self.walk_timer = 0
+	elseif self.walk_timer > self.walk_time / 2 then
+		self.image = images['skeleton2.png']
+	end
 
 end
 
@@ -125,6 +132,9 @@ function spawn_skeleton(x, y, dir)
 		HP = 3,
 		hurt_time = .1,
 		hurt_timer = .11,
+
+		walk_time = .25,
+		walk_timer = 0,
 
 		-- Used for the tweening function to call per frame
 		next_path = next_path,

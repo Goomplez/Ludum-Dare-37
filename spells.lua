@@ -25,7 +25,7 @@ function spawn_fireball(x, y, direction)
 		y = y,
 		r = 5,
 		image = images["fireball.png"],
-		rotation = dirToAngle(direction) - (math.pi * 3 / 32) + ( math.random(5) * math.pi / 32),
+		rotation = dirToAngle(direction) - (math.pi * 3 / 32) + (math.random(5) * math.pi / 32),
 		scale = { x = 2.0, y = 2.0, },
 		offset = {
 			x = 5,

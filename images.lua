@@ -25,6 +25,4 @@ for i, im in ipairs(to_darken) do
 	images[im.name]:refresh()
 end
 
-
-
 return images
