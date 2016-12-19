@@ -1,4 +1,6 @@
-local function update(self, dt) 
+local images = require("images")
+local sounds = require("sounds")
+local function update(self, dt)
 	self.x, self.y = offsetByVector(self, self.rotation + (math.pi), dt * self.velocity)
 
 	if self.x < -10 or self.y < -10 or self.y > g_height or self.x > g_height then

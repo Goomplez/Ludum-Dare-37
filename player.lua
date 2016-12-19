@@ -1,4 +1,5 @@
 local images = require("images")
+local sounds = require("sounds")
 local function player_update(self, dt)
 	key = love.keyboard
 	if key.isDown("w") then

@@ -1,6 +1,7 @@
 local images = require("images")
 local sounds = require("sounds")
 local font = require("fonts")
+local flux = require("flux")
 require("tablebackground")
 require("utils")
 

@@ -18,6 +18,7 @@ for i, file in ipairs(files) do
 	end
 	-- Map "/" to it's image
 	font["/"] = font["slash"]
+	font["."] = font["period"]
 end
 
 local function font_print(x, y, text, rotation, scalex, scaley, shearx, sheary)
@@ -25,7 +26,7 @@ local function font_print(x, y, text, rotation, scalex, scaley, shearx, sheary)
 	love.graphics.translate(x, y)
 	local h = font['0']:getHeight() * scalex
 	local w = font['0']:getWidth() * scaley
-	local lines  = 0
+	local lines = 0
 	local chars = 0
 	for i=1, #text do
 		chars = chars + 1
@@ -92,11 +93,12 @@ function font.printLineRightAligned(x, y, text)
 	local w = font["0"]:getWidth() * 2
 	-- local x = 32 + getTableBounds().x.max - w
 	for i = 1, #text do
-	    local c = str:sub(-i,-i)
-			if x == " " then
+	    local c = text:sub(-i,-i)
+			-- print(x, y, c)
+			if not font[c] then
 				-- Just skip this char
 			else
-		    love.graphics.draw(font[c], x - (i * w), 0, 0, 2, 2)
+		    love.graphics.draw(font[c], x - (i * w), y, 0, 2, 2)
 			end
 	end
 end

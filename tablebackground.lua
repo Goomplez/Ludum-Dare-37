@@ -1,3 +1,4 @@
+local images = require("images")
 function getTableBounds()
 	local scale = 2
 	local w = 16 * scale
@@ -11,7 +12,7 @@ function getTableBounds()
 end
 
 
-local function update(self, dt) 
+local function update(self, dt)
 	self.lava_timer = self.lava_timer + dt
 	if self.lava_timer >= 4 then
 		self.lavaPictureName = "lava.png"

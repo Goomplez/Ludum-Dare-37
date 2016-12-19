@@ -1,15 +1,22 @@
 -- require("lovedebug")
 require("utils")
 require("spells")
+require("tablebackground")
+require("enemies")
+require("zombie")
+require("skeleton")
+require("dragon")
+require("player_health")
+require("starting_menu")
 local blitty = require("blitty")
 local font = require("fonts")
 local curse = require("curse")
-flux = require("flux")
-images = require("images")
-player = require("player")
-sounds = require("sounds")
+local flux = require("flux")
+local images = require("images")
+local player = require("player")
+local sounds = require("sounds")
+local count_down = require("countdown")
 
-local count_down = {} -- require("count_down")
 
 g_height = 0
 g_width = 0
@@ -36,6 +43,15 @@ local has_boss = false
 local dragon_updates = 0
 local fireball_timer = 0
 local fireball_time = 5
+
+function love.load()
+	love.window.setMode(768, 513)
+	loadStart()
+	sounds["explosion.wav"]:setVolume(1.5)
+	sounds["music.wav"]:setVolume(.25)
+	sounds["music2.wav"]:setVolume(.15)
+	sounds["music3.wav"]:setVolume(.15)
+end
 
 curr_music = ({"music2.wav", "music.wav"})[math.random(2)]
 local music = sounds[curr_music]
@@ -229,27 +245,6 @@ function loadStart()
 	addRenderable(count_down)
 end
 
-function love.load()
-	love.window.setMode(768, 513)
-	require("tablebackground")
-	require("enemies")
-	require("zombie")
-	require("skeleton")
-	require("dragon")
-	font = require("fonts")
-	images = require("images")
-	sounds = require("sounds")
-	player = require("player")
-	count_down = require("countdown")
-	require("player_health")
-	require("starting_menu")
-	loadStart()
-	sounds["explosion.wav"]:setVolume(1.5)
-	sounds["music.wav"]:setVolume(.25)
-	sounds["music2.wav"]:setVolume(.15)
-	sounds["music3.wav"]:setVolume(.15)
-end
-
 function love.draw()
 	if is_menu then
 		render_menu()
@@ -280,6 +275,8 @@ function love.draw()
 			love.graphics.draw(surface.image, surface.x, surface.y, surface.rotation, surface.scale.x, surface.scale.y)
 		end
 	end
+  local fps = tostring(love.timer.getFPS())
+	font.printLineRightAligned(768, 460, fps .. " FPS")
 	if player.HP == 0 then
 		w, h = images["game_over2.png"]:getDimensions()
 		love.graphics.draw(images["game_over2.png"], g_height / 2, g_width / 2, 0, 2, 2, w/2, h/2)

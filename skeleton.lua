@@ -1,6 +1,7 @@
 -- Skeleton
 local images = require("images")
 local sounds = require("sounds")
+local flux = require("flux")
 
 local function next_path(self)
 	-- Current x and y are set up already
