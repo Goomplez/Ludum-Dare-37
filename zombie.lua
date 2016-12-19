@@ -2,6 +2,7 @@
 local images = require("images")
 local sounds = require("sounds")
 local player = require("player")
+local potion = require("potion")
 
 local function harm_z(self)
 	if self.hurt_timer >= self.hurt_time then
@@ -14,6 +15,7 @@ local function harm_z(self)
 			self.rm_render = true
 			self.rm_update = true
 			self.rm_enemy = true
+			potion.spawn_potion(self.x, self.y)
 		end
 	end
 end
