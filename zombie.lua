@@ -3,6 +3,7 @@ local images = require("images")
 local sounds = require("sounds")
 local player = require("player")
 local potion = require("potion")
+require("explosion")
 
 local function harm_z(self)
 	if self.hurt_timer >= self.hurt_time then
@@ -19,6 +20,9 @@ local function harm_z(self)
 				local potion = spawn_potion(self.x, self.y)
 				addOtherSpell(potion)
 			end
+			local boom = spawn_explosion(self.x, self.y, 3, 30)
+			addRenderable(boom)
+			addUpdateable(boom)
 		end
 	end
 end
@@ -78,7 +82,7 @@ function spawn_zombie(x, y, dir)
 		hurt_timer = .11,
 		harm = harm_z,
 
-		walk_time = .75,
+		walk_time = .15,
 		walk_timer = 0,
 
 		-- Collection flags
