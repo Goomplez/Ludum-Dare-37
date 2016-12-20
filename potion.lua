@@ -31,9 +31,6 @@ function spawn_potion(x, y)
 		xBase = x,
 		yBase = y,
 
-		bob_time = .5,
-		bob_timer = 0,
-		bob_dir = 1,
 
 		image = images["red-potion.png"],
 		scale = {
@@ -51,8 +48,9 @@ function spawn_potion(x, y)
 		update = update_p,
 
 		-- Potion
-		blink_time = .1,
-		blink_timer = .11,
+		bob_time = .5,
+		bob_timer = 0,
+		bob_dir = 1,
 		collide = pickup,
 
 		-- Collection flags

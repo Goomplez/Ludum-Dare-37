@@ -7,7 +7,6 @@ require("zombie")
 require("skeleton")
 require("dragon")
 require("player_health")
-require("starting_menu")
 local blitty = require("blitty")
 local font = require("fonts")
 local curse = require("curse")
@@ -43,6 +42,7 @@ local fireball_time = 5
 
 function love.load()
 	love.window.setMode(768, 513)
+	require("starting_menu")
 	loadStart()
 	sounds["explosion.wav"]:setVolume(1.5)
 	sounds["music.wav"]:setVolume(.25)
@@ -196,8 +196,8 @@ function love.update(dt)
 			local enemy = spawn()(math.prandom(xbounds.min, xbounds.max), math.prandom(ybounds.min, ybounds.max), "left")
 			addEnemy(enemy)
 		end)
-		-- Spawn an extra enemie every 10 enemies
-		if count_down.total % 10 == 0 then
+		-- Spawn an extra enemy every 10 enemies
+		if count_down.total % 5 == 0 then
 			boop:oncomplete(function()
 				if count_down:isBoss() then return end
 				local bounds = getTableBounds()

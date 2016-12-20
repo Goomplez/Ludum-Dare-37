@@ -20,7 +20,7 @@ local function harm_z(self)
 				local potion = spawn_potion(self.x, self.y)
 				addOtherSpell(potion)
 			end
-			local boom = spawn_explosion(self.x, self.y, 3, 30)
+			local boom = spawn_explosion(self.x, self.y, 1, 30)
 			addRenderable(boom)
 			addUpdateable(boom)
 		end
