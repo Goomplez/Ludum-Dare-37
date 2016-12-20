@@ -116,7 +116,7 @@ function spawn_goblin(x,y, dir)
 			self.rm_update = true
 			self.rm_render = true
 			self.rm_enemy = true
-			local boom = spawn_explosion(self.x, self.y, .5)
+			local boom = spawn_explosion(self.x, self.y, .75, 12)
 			addRenderable(boom)
 			addUpdateable(boom)
 		end,

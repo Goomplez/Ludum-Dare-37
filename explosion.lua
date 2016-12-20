@@ -28,15 +28,20 @@ local function render(self)
   end
 end
 
-function spawn_explosion(x, y, duration)
-  local particles = love.graphics.newParticleSystem(images["explosion1-gray.png"], 100)
+function make_system(imageName, duration, intensity)
+  local particles = love.graphics.newParticleSystem(images[imageName], 20)
   particles:setParticleLifetime(0, duration)
-  particles:setEmissionRate(10)
+  particles:setEmissionRate(intensity)
   particles:setSizeVariation(1)
   particles:setAreaSpread('normal', 2, 2)
   particles:setLinearAcceleration(-0, -0, 0, 0)
-  particles:setColors(255, 255, 255, 255, 255, 255, 255, 0)
+  particles:setColors(255, 75, 75, 255, 255, 255, 255, 0)
+  return particles
+end
 
+function spawn_explosion(x, y, duration, intesity)
+  local particles = make_system("explosion1-gray.png", duration, intesity)
+  -- local greyparticles = make_system("explosion1-gray.png")
   return {
     -- Renderable
     x = x,
@@ -45,7 +50,7 @@ function spawn_explosion(x, y, duration)
       x = 2.0,
       y = 2.0
     },
-    parts = { particles },
+    parts = { particles, }, -- greyparticles },
     duration = duration,
     timer = 0,
     cloud_spawn_timer = love.math.random(5) * .1,

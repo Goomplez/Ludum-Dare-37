@@ -2,6 +2,7 @@
 local images = require("images")
 local sounds = require("sounds")
 local flux = require("flux")
+require("explosion")
 
 local function next_path(self)
 	-- Current x and y are set up already
@@ -72,6 +73,9 @@ local function harm_skeleton(self, amount)
 			self.rm_render = true
 			self.rm_update = true
 			self.rm_enemy = true
+			local boom = spawn_explosion(self.x, self.y, .75, 20)
+			addRenderable(boom)
+			addUpdateable(boom)
 		end
 	end
 end
