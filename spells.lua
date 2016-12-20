@@ -87,7 +87,7 @@ function spawn_spell(x, y, direction)
 		velocity = 300,
 		update = update_shot,
 
-		toggle_time = .1,
+		toggle_time = .2,
 		toggle_timer = 0,
 
 		-- Removal flags
