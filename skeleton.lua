@@ -137,7 +137,7 @@ function spawn_skeleton(x, y, dir)
 		hurt_time = .1,
 		hurt_timer = .11,
 
-		walk_time = .5,
+		walk_time = .25,
 		walk_timer = 0,
 
 		-- Used for the tweening function to call per frame

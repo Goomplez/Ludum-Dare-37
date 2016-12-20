@@ -78,7 +78,7 @@ function spawn_zombie(x, y, dir)
 		hurt_timer = .11,
 		harm = harm_z,
 
-		walk_time = .75,
+		walk_time = .15,
 		walk_timer = 0,
 
 		-- Collection flags
