@@ -33,6 +33,13 @@ local function update_z(self, dt)
 	else
 		self.scale.x = math.copysign(self.scale.x, -1)
 	end
+	self.walk_timer = self.walk_timer + dt
+	if self.walk_timer > self.walk_time then
+		self.image = images['zombie-invert.png']
+		self.walk_timer = 0
+	elseif self.walk_timer > self.walk_time / 2 then
+		self.image = images['zombie-invert2.png']
+	end
 
 	if self.hurt_timer < self.hurt_time then
 		self.hurt_timer = self.hurt_timer + dt
@@ -70,6 +77,9 @@ function spawn_zombie(x, y, dir)
 		hurt_time = .1,
 		hurt_timer = .11,
 		harm = harm_z,
+
+		walk_time = .75,
+		walk_timer = 0,
 
 		-- Collection flags
 		rm_render = false,
