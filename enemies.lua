@@ -2,6 +2,8 @@
 local images = require("images")
 local sounds = require("sounds")
 local flux = require("flux")
+require("explosion")
+
 
 function next_path(self)
 	-- Current x and y are set up already
@@ -28,7 +30,7 @@ function next_path(self)
 	self.tween:oncomplete(function()
 		if self.traveling_on then
 			self:switch_xy()
-		else 
+		else
 			self:next_path()
 		end
 	end)
@@ -54,7 +56,6 @@ function switch_xy(self)
 	end)
 end
 
-
 function get_random_path(start_point, bounds)
 	local startx, starty, xBounds, yBounds
 	startx, starty = start_point.x, start_point.y
@@ -63,7 +64,7 @@ function get_random_path(start_point, bounds)
 	path = {
 		selectedIdx = 1
 	}
-	for q = 1, 5 + math.random(5), 1 do 
+	for q = 1, 5 + math.random(5), 1 do
 		local _x = xBounds.min + math.random(xBounds.max - xBounds.min)
 		local _y = yBounds.min + math.random(yBounds.max - yBounds.min)
 		local _time = 0.0065 * math.dist(_x, _y, startx, starty)
@@ -95,7 +96,7 @@ function spawn_goblin(x,y, dir)
 		},
 		offset = {
 			x = 10,
-			y = 10, 
+			y = 10,
 		},
 		r = 10,
 		rotation = dirToAngle(dir),
@@ -115,6 +116,9 @@ function spawn_goblin(x,y, dir)
 			self.rm_update = true
 			self.rm_render = true
 			self.rm_enemy = true
+			local boom = spawn_explosion(self.x, self.y, .5)
+			addRenderable(boom)
+			addUpdateable(boom)
 		end,
 		prev_x  = x,
 		prev_y = y,
@@ -129,4 +133,3 @@ function spawn_goblin(x,y, dir)
 	return gob
 	-- body
 end
-

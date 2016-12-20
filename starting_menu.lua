@@ -18,7 +18,7 @@ local control = ({
 
 local controls_text =
 'MOVE=WASD\n\n' ..
-'ATTACK=ARROWS\n\n' ..
+'ATTACK=udrl\n\n' ..
 'PAUSE=P\n\n' ..
 'QUIT=Q\n\n'
 
@@ -31,9 +31,9 @@ function render_menu()
 	local titlex = getTableBounds().x.min
 	local titley = getTableBounds().y.min
 	if show_controls then
-		-- love.graphics.draw(images["backdrop.png"], 220, 160, 0, 2, 2)
+		-- love.graphics.draw(images["scroll.png"], 110, 80, 0, .25, .25)
 		font.print(230, 170, controls_text)
-	elseif  show_credits then
+	elseif show_credits then
 		-- love.graphics.draw(images["controls_menu.png"], 220, 160, 0, 2, 2)
 		-- love.graphics.draw(images["backdrop.png"], 220, 160, 0, 2, 2)
 		font.print(230, 170, credits)

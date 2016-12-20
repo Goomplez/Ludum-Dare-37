@@ -19,6 +19,10 @@ for i, file in ipairs(files) do
 	-- Map "/" to it's image
 	font["/"] = font["slash"]
 	font["."] = font["period"]
+	font["u"] = font["up"]
+	font["d"] = font["down"]
+	font["l"] = font["left"]
+	font["r"] = font["right"]
 end
 
 local function font_print(x, y, text, rotation, scalex, scaley, shearx, sheary)
