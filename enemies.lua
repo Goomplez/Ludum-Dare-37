@@ -80,9 +80,14 @@ end
 
 -- Stub for skeleton, goblin
 local function update(self, dt)
-
+	self.walk_timer = self.walk_timer + dt
+	if self.walk_timer > self.walk_time then
+		self.image = images['goblin-invert.png']
+		self.walk_timer = 0
+	elseif self.walk_timer > self.walk_time / 2 then
+		self.image = images['goblin-invert2.png']
+	end
 end
-
 
 function spawn_goblin(x,y, dir)
 	local gob = {
@@ -122,6 +127,8 @@ function spawn_goblin(x,y, dir)
 		end,
 		prev_x  = x,
 		prev_y = y,
+		walk_time = .15,
+		walk_timer = 0,
 		-- Used for the tweening function to call per frame
 		next_path = next_path,
 		switch_xy = switch_xy,

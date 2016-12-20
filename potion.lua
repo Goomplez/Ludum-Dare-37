@@ -31,7 +31,6 @@ function spawn_potion(x, y)
 		xBase = x,
 		yBase = y,
 
-
 		image = images["red-potion.png"],
 		scale = {
 			x = 2.0,
