@@ -30,7 +30,6 @@ function spawn_dragon()
 		rm_update = false,
 		rm_enemy = false,
 
-		-- Custom player information
 		speed = 200,
 		shot_time = .2,
 		shot_timer = 0,
@@ -39,10 +38,9 @@ function spawn_dragon()
 		can_shoot = false,
 
 		r = 40,
-		-- HP, to be used by player_health
-		HP = 50,
+		HP = 30,
 		hit_timer = .51,
-		hit_delay = .5,
+		hit_delay = .1,
 	}
 
 	function dragon.is_vulnerable(self)

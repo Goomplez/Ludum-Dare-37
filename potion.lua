@@ -6,7 +6,7 @@ local player = require("player")
 -- Pickup function for potion
 local function pickup(self)
 	-- if self.HP == 0 then
-		player:heal(2)
+		player:heal(1)
 		self.rm_render = true
 		self.rm_update = true
 		self.rm_other_spell = true

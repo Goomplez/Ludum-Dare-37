@@ -16,7 +16,7 @@ for i, file in ipairs(files) do
 		font[charName] = love.graphics.newImage("assets/font/" .. charName .. ".png")
 		--print(font[charName])
 	end
-	-- Map "/" to it's image
+	-- Map chars to their image, we also currently assume an uppercase font. 
 	font["/"] = font["slash"]
 	font["."] = font["period"]
 	font["u"] = font["up"]

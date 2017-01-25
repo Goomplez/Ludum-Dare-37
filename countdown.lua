@@ -33,7 +33,7 @@ return {
 	x = 0,
 	y = 0,
 	total = 0,
-	out_of = 100,
+	out_of = 1,
 	render = render,
 	udpate = update,
 	setCountDown = setCountDown,

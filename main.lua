@@ -15,6 +15,7 @@ local images = require("images")
 local player = require("player")
 local sounds = require("sounds")
 local count_down = require("countdown")
+local typecheck = require("typecheck")
 
 g_height = 0
 g_width = 0
@@ -278,7 +279,7 @@ function love.draw()
 			love.graphics.draw(surface.image, surface.x, surface.y, surface.rotation, surface.scale.x, surface.scale.y)
 		end
 	end
-  local fps = tostring(love.timer.getFPS())
+	local fps = tostring(love.timer.getFPS())
 	font.printLineRightAligned(768, 460, fps .. " FPS")
 	if player.HP == 0 then
 		w, h = images["game_over2.png"]:getDimensions()
@@ -292,23 +293,13 @@ function love.draw()
 	end
 end
 
-local update_reqs = {
+local isUpdatable = typecheck.checker({
 	rm_update = "boolean",
 	update = "function",
-}
-
-function type_check(item, fields)
-	for k, _type in pairs(fields) do
-		if type(item[k]) ~= _type then
-			-- print(k, _type, type(item[k]))
-			return false, k .. " " .. _type ..  " " .. type(item[k])
-		end
-	end
-	return true, nil
-end
+})
 
 function addUpdateable(item)
-	valid, msg = type_check(item, update_reqs)
+	valid, msg = isUpdatable(item, update_reqs)
 	if valid then
 		table.insert(updateables, item)
 	else
@@ -317,31 +308,31 @@ function addUpdateable(item)
 	end
 end
 
-local enemy_reqs = {
+local isEnemy = typecheck.checker({
 	rm_enemy = "boolean",
 	x = "number",
 	y = "number",
 	r = "number",
 	harm = "function",
-}
+})
 
-local player_spell_reqs = {
+local isPlayerSpell = typecheck.checker({
 	rm_player_spell = "boolean",
 	x = "number",
 	y = "number",
 	r = "number",
-}
+})
 
-local other_spell_reqs = {
+local isOtherSpell = typecheck.checker({
 	rm_other_spell = "boolean",
 	x = "number",
 	y = "number",
 	r = "number",
 	collide = "function",
-}
+})
 
 function addOtherSpell(item)
-	valid, msg = type_check(item, other_spell_reqs)
+	valid, msg = isOtherSpell(item)
 	if valid then
 		table.insert(other_spells, item)
 		addRenderable(item)
@@ -353,7 +344,7 @@ function addOtherSpell(item)
 end
 
 function addPlayerSpell(item)
-	valid, msg = type_check(item, player_spell_reqs)
+	valid, msg = isPlayerSpell(item, player_spell_reqs)
 	if valid then
 		table.insert(player_spells, item)
 	else
@@ -363,7 +354,7 @@ function addPlayerSpell(item)
 end
 
 function addEnemy(item)
-	valid, msg = type_check(item, enemy_reqs)
+	valid, msg = isEnemy(item, enemy_reqs)
 	if valid then
 		addRenderable(item)
 		addUpdateable(item)
@@ -374,23 +365,23 @@ function addEnemy(item)
 	end
 end
 
-local render_func_reqs = {
+local isRenderFunc = typecheck.checker({
 	rm_render = "boolean",
 	render = "function",
-}
+})
 
-local render_reqs = {
+local canRender = typecheck.checker({
 	rm_render = "boolean",
 	image = "userdata",
 	x = "number",
 	y = "number",
 	rotation = "number",
 	scale = "table",
-}
+})
 
 function addRenderable(item)
-	valid, msg = type_check(item, render_func_reqs)
-	valid2, msg2 = type_check(item, render_reqs)
+	valid, msg = isRenderFunc(item)
+	valid2, msg2 = canRender(item)
 	if valid or valid2 then
 		table.insert(renderables, item)
 	else
